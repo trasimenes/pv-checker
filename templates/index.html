@@ -1,0 +1,927 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Pierre & Vacances Image Checker{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
+
+<style>
+/* Conteneur pour l'image hover */
+.image-hover-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Image popup au hover */
+.image-hover-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    background: white;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    padding: 8px;
+    display: none;
+    width: 500px;
+    height: 500px;
+    pointer-events: none;
+}
+
+.image-hover-popup img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+/* Effet de transition */
+.image-hover-container:hover .image-hover-popup {
+    display: block;
+    animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Responsive pour les petits écrans */
+@media (max-width: 768px) {
+    .image-hover-popup {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-hover-popup {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* Style pour les miniatures avec hover */
+.thumbnail-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.thumbnail-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-xl-3 col-md-6 col-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="fw-semibold d-block mb-1">Total Destinations</span>
+            <h3 class="card-title mb-2" id="total-destinations">0</h3>
+          </div>
+          <div class="avatar flex-shrink-0">
+            <span class="avatar-initial rounded bg-label-primary">
+              <i class="bx bx-map"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 col-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="fw-semibold d-block mb-1">Destinations Vérifiées</span>
+            <h3 class="card-title mb-2" id="checked-destinations">0</h3>
+          </div>
+          <div class="avatar flex-shrink-0">
+            <span class="avatar-initial rounded bg-label-success">
+              <i class="bx bx-check-circle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 col-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="fw-semibold d-block mb-1">Avec Placeholders</span>
+            <h3 class="card-title mb-2" id="placeholder-count">0</h3>
+          </div>
+          <div class="avatar flex-shrink-0">
+            <span class="avatar-initial rounded bg-label-warning">
+              <i class="bx bx-image"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6 col-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <span class="fw-semibold d-block mb-1">Erreurs</span>
+            <h3 class="card-title mb-2" id="error-count">0</h3>
+          </div>
+          <div class="avatar flex-shrink-0">
+            <span class="avatar-initial rounded bg-label-danger">
+              <i class="bx bx-error-circle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Contrôle de Vérification</h5>
+        <div>
+          <button class="btn btn-primary" onclick="startCrawl()">
+            <i class="bx bx-play-circle me-2"></i>Lancer la vérification
+          </button>
+          <button class="btn btn-secondary" onclick="stopCrawl()" disabled id="stop-btn">
+            <i class="bx bx-stop-circle me-2"></i>Arrêter
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- Barre de progression pour les tâches en cours -->
+        <div class="mb-3" id="task-progress-container" style="display: none;">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Tâche en cours</span>
+            <span id="task-progress-text">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 id="task-progress-bar"
+                 style="width: 0%">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <small class="text-muted" id="task-description">Description de la tâche</small>
+            <small class="text-muted" id="task-items">0/0 éléments</small>
+          </div>
+          <p class="text-muted mt-1" id="task-current-item"></p>
+          <div class="mt-2">
+            <button class="btn btn-danger btn-sm" onclick="stopCurrentTask()" id="stop-task-btn">
+              <i class="bx bx-stop"></i> Arrêter la tâche
+            </button>
+            <a href="/tasks" class="btn btn-info btn-sm" target="_blank">
+              <i class="bx bx-task"></i> Voir toutes les tâches
+            </a>
+          </div>
+        </div>
+
+
+        <div class="mb-3">
+          <label class="form-label">Destinations à vérifier</label>
+          <div class="row">
+            <div class="col-md-6">
+              <select class="form-select" id="verification-scope">
+                <option value="all">Toutes les destinations</option>
+                <option value="country">Par pays spécifique</option>
+                <option value="unverified">Non vérifiées uniquement</option>
+                <option value="placeholder">Avec placeholders uniquement</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <select class="form-select" id="country-filter" style="display: none;">
+                <option value="">Sélectionner un pays</option>
+                <option value="FR">France</option>
+                <option value="ES">Espagne</option>
+                <option value="IT">Italie</option>
+                <option value="BE">Belgique</option>
+                <option value="NL">Pays-Bas</option>
+                <option value="DE">Allemagne</option>
+                <option value="AT">Autriche</option>
+                <option value="CH">Suisse</option>
+                <option value="PT">Portugal</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Limite (optionnel)</label>
+          <input type="number" class="form-control" id="max-destinations" value="" min="1" max="2000" placeholder="Toutes les destinations">
+          <div class="form-text">Laisser vide pour vérifier toutes les destinations</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card">
+      <h5 class="card-header">Résultats de la vérification des destinations</h5>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bx bx-search"></i></span>
+              <input type="text" class="form-control" placeholder="Rechercher une destination..." id="search-input" onkeyup="filterResults()">
+            </div>
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-success btn-sm" onclick="exportResults('csv')">
+              <i class="bx bx-download"></i> Export CSV
+            </button>
+            <button class="btn btn-info btn-sm" onclick="exportResults('json')">
+              <i class="bx bx-download"></i> Export JSON
+            </button>
+          </div>
+        </div>
+        
+        <!-- Tabs pour filtrer les résultats -->
+        <ul class="nav nav-tabs mb-3" id="results-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="all-results-tab" type="button" onclick="filterResultsByTab('all')">
+              <i class="bx bx-list-ul"></i> Tous <span class="badge bg-label-primary ms-1" id="all-count">0</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="no-images-tab" type="button" onclick="filterResultsByTab('no-images')">
+              <i class="bx bx-image-alt"></i> Sans image <span class="badge bg-label-danger ms-1" id="no-images-count">0</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="placeholder-tab" type="button" onclick="filterResultsByTab('placeholder')">
+              <i class="bx bx-error"></i> Avec placeholder <span class="badge bg-label-warning ms-1" id="placeholder-tab-count">0</span>
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="valid-tab" type="button" onclick="filterResultsByTab('valid')">
+              <i class="bx bx-check-circle"></i> Valides <span class="badge bg-label-success ms-1" id="valid-count">0</span>
+            </button>
+          </li>
+        </ul>
+        
+        <div class="table-responsive text-nowrap">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 80px;">Aperçu</th>
+                <th>Destination</th>
+                <th>URL</th>
+                <th>Images</th>
+                <th>Placeholders</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody class="table-border-bottom-0" id="results-tbody">
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <p class="text-muted mb-0">Affichage <span id="showing-start">0</span> - <span id="showing-end">0</span> sur <span id="showing-total">0</span> résultats</p>
+          </div>
+          <div class="col-md-6">
+            <nav aria-label="Page navigation">
+              <ul class="pagination pagination-sm justify-content-end mb-0" id="pagination">
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="imageDetailsModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Détails des images</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="image-details-content">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+<script>
+let checkInterval;
+let isChecking = false;
+let currentResults = [];
+let taskMonitorInterval;
+let currentTaskId = null;
+
+function startCrawl() {
+    if (isChecking) return;
+    
+    const scope = document.getElementById('verification-scope').value;
+    const country = document.getElementById('country-filter').value;
+    const maxDestinations = document.getElementById('max-destinations').value;
+    
+    // Validation
+    if (scope === 'country' && !country) {
+        alert('Veuillez sélectionner un pays');
+        return;
+    }
+    
+    document.getElementById('stop-btn').disabled = false;
+    document.querySelector('button[onclick="startCrawl()"]').disabled = true;
+    
+    isChecking = true;
+    currentResults = [];
+    
+    const requestData = {
+        scope: scope,
+        country: country,
+        max_destinations: maxDestinations ? parseInt(maxDestinations) : null
+    };
+    
+    fetch('/api/check-from-database', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Erreur: ' + data.error);
+            stopCrawl();
+        } else {
+            currentTaskId = data.task_id;
+            startTaskMonitoring();
+            // Garder aussi l'ancien système pour la compatibilité des résultats
+            checkInterval = setInterval(checkStatus, 1000);
+        }
+    })
+    .catch(error => {
+        alert('Erreur: ' + error);
+        stopCrawl();
+    });
+}
+
+// Show/hide country filter based on scope selection
+document.addEventListener('DOMContentLoaded', function() {
+    const scopeSelect = document.getElementById('verification-scope');
+    const countryFilter = document.getElementById('country-filter');
+    
+    scopeSelect.addEventListener('change', function() {
+        if (this.value === 'country') {
+            countryFilter.style.display = 'block';
+        } else {
+            countryFilter.style.display = 'none';
+        }
+    });
+    
+    // Initial load of existing results
+    fetch('/api/results')
+        .then(response => response.json())
+        .then(data => {
+            if (data.results && data.results.length > 0) {
+                updateResults(data.results);
+                updateStats({results: data.results, total: data.results.length, progress: data.results.length});
+            }
+        });
+});
+
+function stopCrawl() {
+    isChecking = false;
+    if (checkInterval) {
+        clearInterval(checkInterval);
+    }
+    
+    stopTaskMonitoring();
+    
+    document.getElementById('stop-btn').disabled = true;
+    document.querySelector('button[onclick="startCrawl()"]').disabled = false;
+}
+
+function startTaskMonitoring() {
+    document.getElementById('task-progress-container').style.display = 'block';
+    taskMonitorInterval = setInterval(checkTaskStatus, 1000);
+}
+
+function stopTaskMonitoring() {
+    if (taskMonitorInterval) {
+        clearInterval(taskMonitorInterval);
+    }
+    document.getElementById('task-progress-container').style.display = 'none';
+    currentTaskId = null;
+}
+
+function checkTaskStatus() {
+    if (!currentTaskId) return;
+    
+    fetch(`/api/tasks/${currentTaskId}`)
+        .then(response => response.json())
+        .then(task => {
+            if (task.error) {
+                console.error('Tâche non trouvée');
+                stopTaskMonitoring();
+                return;
+            }
+            
+            updateTaskProgress(task);
+            
+            // Si la tâche est terminée, arrêter le monitoring
+            if (task.status !== 'running') {
+                setTimeout(stopTaskMonitoring, 2000); // Attendre 2s pour voir le résultat final
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du monitoring de la tâche:', error);
+        });
+}
+
+function updateTaskProgress(task) {
+    const progress = task.total > 0 ? Math.round((task.progress / task.total) * 100) : 0;
+    
+    document.getElementById('task-progress-bar').style.width = progress + '%';
+    document.getElementById('task-progress-text').textContent = progress + '%';
+    document.getElementById('task-description').textContent = task.description;
+    document.getElementById('task-items').textContent = `${task.progress}/${task.total} éléments`;
+    
+    if (task.current_item) {
+        document.getElementById('task-current-item').textContent = task.current_item;
+    }
+    
+    // Changer la couleur selon le statut
+    const progressBar = document.getElementById('task-progress-bar');
+    progressBar.className = 'progress-bar progress-bar-striped';
+    
+    switch(task.status) {
+        case 'running':
+            progressBar.classList.add('progress-bar-animated');
+            break;
+        case 'completed':
+            progressBar.classList.add('bg-success');
+            document.getElementById('task-current-item').textContent = '✅ Tâche terminée avec succès';
+            break;
+        case 'error':
+            progressBar.classList.add('bg-danger');
+            document.getElementById('task-current-item').textContent = '❌ Erreur: ' + (task.error || 'Erreur inconnue');
+            break;
+        case 'stopped':
+            progressBar.classList.add('bg-warning');
+            document.getElementById('task-current-item').textContent = '⏹️ Tâche arrêtée par l\'utilisateur';
+            break;
+    }
+}
+
+function stopCurrentTask() {
+    if (!currentTaskId) return;
+    
+    if (!confirm('Êtes-vous sûr de vouloir arrêter la tâche en cours ?')) {
+        return;
+    }
+    
+    fetch(`/api/tasks/${currentTaskId}/stop`, { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                console.log('Tâche arrêtée avec succès');
+                stopCrawl(); // Arrêter aussi le processus local
+            } else {
+                alert('Erreur lors de l\'arrêt: ' + (result.error || 'Erreur inconnue'));
+            }
+        })
+        .catch(error => {
+            alert('Erreur: ' + error);
+        });
+}
+
+function checkStatus() {
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            // Ne plus gérer la progression ici, c'est fait par le task manager
+            updateResults(data.results);
+            updateStats(data);
+            
+            if (!data.is_running) {
+                stopCrawl();
+            }
+        });
+}
+
+function updateProgress(data) {
+    // Cette fonction est maintenant gérée par updateTaskProgress
+    // On la garde vide pour la compatibilité
+}
+
+let currentPage = 1;
+const resultsPerPage = 20;
+let filteredResults = [];
+let currentTab = 'all';
+
+function updateResults(results) {
+    currentResults = results;
+    filteredResults = results;
+    updateTabCounts(results);
+    filterResultsByTab(currentTab);
+}
+
+function updateTabCounts(results) {
+    const allCount = results.length;
+    const noImagesCount = results.filter(r => r.images_found === 0).length;
+    const placeholderCount = results.filter(r => r.has_placeholder).length;
+    const validCount = results.filter(r => r.images_found > 0 && !r.has_placeholder && r.status === 'success').length;
+    
+    document.getElementById('all-count').textContent = allCount;
+    document.getElementById('no-images-count').textContent = noImagesCount;
+    document.getElementById('placeholder-tab-count').textContent = placeholderCount;
+    document.getElementById('valid-count').textContent = validCount;
+}
+
+function filterResultsByTab(tab) {
+    currentTab = tab;
+    
+    // Update active tab
+    document.querySelectorAll('#results-tabs .nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    document.querySelector(`#results-tabs .nav-link[onclick="filterResultsByTab('${tab}')"]`).classList.add('active');
+    
+    // Filter results based on tab
+    switch(tab) {
+        case 'no-images':
+            filteredResults = currentResults.filter(r => r.images_found === 0);
+            break;
+        case 'placeholder':
+            filteredResults = currentResults.filter(r => r.has_placeholder);
+            break;
+        case 'valid':
+            filteredResults = currentResults.filter(r => r.images_found > 0 && !r.has_placeholder && r.status === 'success');
+            break;
+        default:
+            filteredResults = currentResults;
+    }
+    
+    currentPage = 1;
+    displayPage(1);
+}
+
+function displayPage(page) {
+    currentPage = page;
+    const tbody = document.getElementById('results-tbody');
+    tbody.innerHTML = '';
+    
+    const start = (page - 1) * resultsPerPage;
+    const end = Math.min(start + resultsPerPage, filteredResults.length);
+    
+    for (let i = start; i < end; i++) {
+        const result = filteredResults[i];
+        const row = tbody.insertRow();
+        
+        const statusClass = result.status === 'success' ? 'success' : 
+                          result.status === 'warning' ? 'warning' : 'danger';
+        const statusIcon = result.status === 'success' ? 'check-circle' : 
+                         result.status === 'warning' ? 'error' : 'x-circle';
+        
+        const placeholderBadge = result.has_placeholder ? 
+            '<span class="badge bg-label-danger ms-1"><i class="bx bx-image"></i></span>' : '';
+        
+        // Préparer l'imagette (mini-galerie si plusieurs images)
+        let thumbnail = '';
+        if (result.images && result.images.length > 0) {
+            const validImages = result.images.filter(img => !img.is_placeholder);
+            const imagesToShow = validImages.length > 0 ? validImages : result.images;
+            
+            if (imagesToShow.length === 1) {
+                // Une seule image - affichage standard
+                const img = imagesToShow[0];
+                const thumbnailUrl = `/api/thumbnail?url=${encodeURIComponent(img.src)}&size=60`;
+                
+                thumbnail = `
+                    <div class="image-hover-container">
+                        <img src="${thumbnailUrl}" 
+                             class="img-thumbnail thumbnail-hover ${img.is_placeholder ? 'border-warning' : ''}" 
+                             style="width: 60px; height: 60px; object-fit: cover; background: #f8f9fa;"
+                             onerror="this.src='${img.src}'; this.style.objectFit='cover'; this.style.width='60px'; this.style.height='60px';"
+                             title="${img.alt || 'Image de ' + (result.title || result.name || 'destination')}">
+                        ${img.is_placeholder ? '<span class="position-absolute top-0 end-0 badge bg-warning" style="font-size: 8px; z-index: 10;">P</span>' : ''}
+                        <div class="image-hover-popup">
+                            <img src="${img.src}" alt="${img.alt || 'Image agrandie'}" />
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Plusieurs images - affichage en miniatures
+                let thumbnailsHtml = '';
+                
+                // Calculer la disposition en grille selon le nombre d'images
+                const numImages = Math.min(imagesToShow.length, 4); // Maximum 4 images affichées
+                let gridCols, imgSize;
+                
+                if (numImages <= 2) {
+                    gridCols = 1;
+                    imgSize = 25;
+                } else {
+                    gridCols = 2;
+                    imgSize = 25;
+                }
+                
+                for (let i = 0; i < numImages; i++) {
+                    const img = imagesToShow[i];
+                    const thumbnailUrl = `/api/thumbnail?url=${encodeURIComponent(img.src)}&size=${imgSize}`;
+                    
+                    thumbnailsHtml += `
+                        <div class="image-hover-container" style="display: inline-block; margin: 1px;">
+                            <img src="${thumbnailUrl}" 
+                                 class="img-thumbnail thumbnail-hover ${img.is_placeholder ? 'border-warning' : ''}" 
+                                 style="width: ${imgSize}px; height: ${imgSize}px; object-fit: cover;"
+                                 onerror="this.src='${img.src}';"
+                                 title="${img.alt || 'Image ' + (i+1)}">
+                            <div class="image-hover-popup">
+                                <img src="${img.src}" alt="${img.alt || 'Image agrandie ' + (i+1)}" />
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Si plus de 4 images, ajouter un indicateur pour les images restantes
+                if (imagesToShow.length > 4) {
+                    thumbnailsHtml += `
+                        <div class="d-inline-flex align-items-center justify-content-center bg-dark text-white" 
+                             style="width: ${imgSize}px; height: ${imgSize}px; font-size: 8px; margin: 1px; border-radius: 3px;">
+                            +${imagesToShow.length - 4}
+                        </div>
+                    `;
+                }
+                
+                thumbnail = `
+                    <div class="d-flex flex-wrap" style="width: 60px; max-height: 60px; overflow: hidden;">
+                        ${thumbnailsHtml}
+                    </div>
+                `;
+            }
+        } else {
+            thumbnail = `
+                <div class="d-flex align-items-center justify-content-center bg-light rounded" style="width: 60px; height: 60px;">
+                    <i class="bx bx-image-alt text-muted fs-4"></i>
+                </div>
+            `;
+        }
+        
+        row.innerHTML = `
+            <td>
+                ${thumbnail}
+            </td>
+            <td>
+                <strong>${result.title || result.name || 'Sans titre'}</strong>
+                ${placeholderBadge}
+            </td>
+            <td class="text-truncate" style="max-width: 250px;">
+                <a href="${result.url}" target="_blank" class="text-decoration-none" title="${result.url}">
+                    <i class="bx bx-link-external"></i> ${result.url}
+                </a>
+            </td>
+            <td>
+                <span class="badge bg-label-primary">${result.images_found}</span>
+            </td>
+            <td>
+                ${result.placeholder_count > 0 ? 
+                    `<span class="badge bg-label-danger">${result.placeholder_count}</span>` : 
+                    '<span class="badge bg-label-success">0</span>'}
+            </td>
+            <td>
+                <span class="badge bg-label-${statusClass}">
+                    <i class="bx bx-${statusIcon}"></i> ${result.status}
+                </span>
+            </td>
+            <td>
+                <div class="dropdown">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="showImageDetails(${i})">
+                            <i class="bx bx-show me-1"></i> Voir détails
+                        </a>
+                        <a class="dropdown-item" href="${result.url}" target="_blank">
+                            <i class="bx bx-link-external me-1"></i> Ouvrir la page
+                        </a>
+                    </div>
+                </div>
+            </td>
+        `;
+    }
+    
+    updatePagination();
+    updateShowingInfo(start + 1, end, filteredResults.length);
+}
+
+function updatePagination() {
+    const totalPages = Math.ceil(filteredResults.length / resultsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    
+    if (totalPages <= 1) return;
+    
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="displayPage(${currentPage - 1})">Précédent</a>`;
+    pagination.appendChild(prevLi);
+    
+    for (let i = 1; i <= Math.min(totalPages, 10); i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="displayPage(${i})">${i}</a>`;
+        pagination.appendChild(li);
+    }
+    
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="displayPage(${currentPage + 1})">Suivant</a>`;
+    pagination.appendChild(nextLi);
+}
+
+function updateShowingInfo(start, end, total) {
+    document.getElementById('showing-start').textContent = start;
+    document.getElementById('showing-end').textContent = end;
+    document.getElementById('showing-total').textContent = total;
+}
+
+function filterResults() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    
+    // First apply tab filter
+    filterResultsByTab(currentTab);
+    
+    // Then apply search filter on top
+    if (searchTerm !== '') {
+        filteredResults = filteredResults.filter(result => {
+            const title = (result.title || result.name || '').toLowerCase();
+            const url = result.url.toLowerCase();
+            return title.includes(searchTerm) || url.includes(searchTerm);
+        });
+    }
+    
+    displayPage(1);
+}
+
+function exportResults(format) {
+    let data = '';
+    let filename = '';
+    
+    if (format === 'csv') {
+        data = 'Destination,URL,Images,Placeholders,Status,Has Placeholder\n';
+        filteredResults.forEach(result => {
+            data += `"${result.title || result.name || 'Sans titre'}","${result.url}",${result.images_found},${result.placeholder_count || 0},${result.status},${result.has_placeholder}\n`;
+        });
+        filename = 'pv-image-check-results.csv';
+    } else if (format === 'json') {
+        data = JSON.stringify(filteredResults, null, 2);
+        filename = 'pv-image-check-results.json';
+    }
+    
+    const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function updateStats(data) {
+    document.getElementById('total-destinations').textContent = data.total || 0;
+    document.getElementById('checked-destinations').textContent = data.progress || 0;
+    
+    const placeholderCount = data.results.filter(r => r.has_placeholder).length;
+    const errorCount = data.results.filter(r => r.status === 'error').length;
+    
+    document.getElementById('placeholder-count').textContent = placeholderCount;
+    document.getElementById('error-count').textContent = errorCount;
+}
+
+function showImageDetails(index) {
+    const result = filteredResults[index];
+    if (!result) return;
+    
+    const modal = document.getElementById('imageDetailsModal');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    let content = `
+        <div class="modal-header">
+            <h5 class="modal-title">
+                <i class="bx bx-image me-2"></i>Détails des images - ${result.title || result.name || 'Sans titre'}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <span class="text-muted">URL:</span> 
+                <a href="${result.url}" target="_blank" class="text-decoration-none">
+                    ${result.url} <i class="bx bx-link-external"></i>
+                </a>
+            </div>
+    `;
+    
+    if (result.error) {
+        content += `<div class="alert alert-danger"><i class="bx bx-error-circle me-2"></i>${result.error}</div>`;
+    }
+    
+    if (result.has_placeholder) {
+        content += `
+            <div class="alert alert-warning">
+                <i class="bx bx-info-circle me-2"></i>
+                Cette destination utilise ${result.placeholder_count} image(s) placeholder par défaut.
+            </div>
+        `;
+    }
+    
+    if (result.images && result.images.length > 0) {
+        content += '<h6 class="mb-3">Images trouvées (' + result.images.length + ')</h6>';
+        content += '<div class="row">';
+        
+        result.images.forEach((img, imgIndex) => {
+            const badgeClass = img.is_placeholder ? 'danger' : 'success';
+            const badgeText = img.is_placeholder ? 'Placeholder' : 'Image valide';
+            const cardClass = img.is_placeholder ? 'border-danger' : '';
+            
+            content += `
+                <div class="col-md-6 mb-3">
+                    <div class="card ${cardClass}">
+                        <div class="position-relative">
+                            <img src="${img.src}" class="card-img-top" style="height: 200px; object-fit: cover;" 
+                                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect width=%22300%22 height=%22200%22 fill=%22%23f5f5f5%22/><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22 font-family=%22Arial%22 font-size=%2214%22>Image non disponible</text></svg>'">
+                            <span class="position-absolute top-0 end-0 m-2 badge bg-${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text small mb-1">
+                                <strong>Alt:</strong> ${img.alt || '<em>Aucun texte alternatif</em>'}
+                            </p>
+                            <p class="card-text small mb-0">
+                                <strong>Source:</strong> 
+                                <a href="${img.src}" target="_blank" class="text-truncate d-inline-block" style="max-width: 250px;">
+                                    ${img.src}
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        content += '</div>';
+    } else {
+        content += `
+            <div class="alert alert-info">
+                <i class="bx bx-info-circle me-2"></i>
+                Aucune image n'a été trouvée sur cette page.
+            </div>
+        `;
+    }
+    
+    content += `
+        </div>
+        <div class="modal-footer">
+            <a href="${result.url}" target="_blank" class="btn btn-primary">
+                <i class="bx bx-link-external"></i> Visiter la page
+            </a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+    `;
+    
+    modalContent.innerHTML = content;
+    new bootstrap.Modal(modal).show();
+}
+
+// Remove the duplicate DOMContentLoaded listener at the end
+</script>
+{% endblock %}

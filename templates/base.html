@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html
+  lang="fr"
+  class="light-style layout-navbar-fixed layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{{ url_for('static', filename='assets/') }}"
+  data-template="vertical-menu-template"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>{% block title %}Pierre & Vacances - Vérificateur d'Images{% endblock %}</title>
+
+    <meta name="description" content="Vérificateur de présence d'images pour les destinations Pierre & Vacances" />
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/favicon/favicon.ico') }}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/fontawesome.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/flag-icons.css') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/css/rtl/theme-default.css') }}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/demo.css') }}" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/typeahead-js/typeahead.css') }}" />
+    
+    <!-- Swiper.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    
+    {% block extra_css %}{% endblock %}
+
+    <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/template-customizer.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+  </head>
+
+  <body>
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="{{ url_for('index') }}" class="app-brand-link">
+              <span class="app-brand-text demo menu-text fw-bold ms-2">P&V Checker</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <li class="menu-item {% if request.endpoint == 'index' %}active{% endif %}">
+              <a href="{{ url_for('index') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div>Tableau de bord</div>
+              </a>
+            </li>
+
+            <li class="menu-item {% if request.endpoint == 'consolidator' %}active{% endif %}">
+              <a href="{{ url_for('consolidator') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-collection"></i>
+                <div>URL Consolidator</div>
+              </a>
+            </li>
+
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Outils</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="#" class="menu-link" onclick="startNewCheck()">
+                <i class="menu-icon tf-icons bx bx-search"></i>
+                <div>Nouvelle vérification</div>
+              </a>
+            </li>
+
+            <li class="menu-item {% if request.endpoint == 'historique' %}active{% endif %}">
+              <a href="{{ url_for('historique') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-history"></i>
+                <div>Historique</div>
+              </a>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Configuration</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ url_for('settings') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-cog"></i>
+                <div>Paramètres</div>
+              </a>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Système</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="{{ url_for('tasks') }}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-task"></i>
+                <div>Gestionnaire de Tâches</div>
+              </a>
+            </li>
+
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text">Documentation</span>
+            </li>
+
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-help-circle"></i>
+                <div>Aide</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+
+        <div class="layout-page">
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar"
+          >
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item navbar-search-wrapper mb-0">
+                  <h4 class="fw-bold mb-0">Vérificateur d'Images Pierre & Vacances</h4>
+                </div>
+              </div>
+              
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <li class="nav-item dropdown-style-switcher dropdown me-2 me-xl-0">
+                  <span class="nav-link text-body">
+                    <i class="bx bx-user me-2"></i>{{ session.username if session.username else 'Utilisateur' }}
+                  </span>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('logout') }}">
+                    <i class="bx bx-power-off me-2"></i>Déconnexion
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              {% block content %}{% endblock %}
+            </div>
+
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  © <script>document.write(new Date().getFullYear());</script> Pierre & Vacances Image Checker
+                </div>
+              </div>
+            </footer>
+
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+      <div class="drag-target"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='assets/vendor/libs/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/popper/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/libs/typeahead-js/typeahead.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+    
+    <!-- Swiper.js JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

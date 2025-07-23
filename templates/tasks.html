@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionnaire de Tâches - Pierre & Vacances Image Checker{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="bx bx-task me-2"></i>Gestionnaire de Tâches en Arrière-Plan
+        </h5>
+        <div>
+          <button class="btn btn-info btn-sm" onclick="refreshTasks()">
+            <i class="bx bx-refresh me-2"></i>Actualiser
+          </button>
+          <button class="btn btn-warning btn-sm" onclick="stopAllTasks()">
+            <i class="bx bx-stop-circle me-2"></i>Arrêter toutes
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          Cette page affiche toutes les tâches en cours ou récentes. Les tâches se mettent à jour automatiquement toutes les secondes.
+          <span class="badge bg-label-info ms-2">Auto-refresh: 1s</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div id="no-tasks" style="display: none;" class="text-center py-5">
+          <i class="bx bx-task bx-lg text-muted"></i>
+          <h6 class="mt-3 text-muted">Aucune tâche en cours</h6>
+          <p class="text-muted">Les tâches lancées depuis les autres pages apparaîtront ici.</p>
+        </div>
+        
+        <div id="tasks-container">
+          <!-- Les tâches seront chargées ici -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let refreshInterval;
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadTasks();
+    startAutoRefresh();
+});
+
+function startAutoRefresh() {
+    refreshInterval = setInterval(loadTasks, 1000); // Refresh every 1 second
+}
+
+function stopAutoRefresh() {
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+}
+
+function loadTasks() {
+    fetch('/api/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            displayTasks(tasks);
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des tâches:', error);
+        });
+}
+
+function displayTasks(tasks) {
+    const container = document.getElementById('tasks-container');
+    const noTasks = document.getElementById('no-tasks');
+    
+    if (tasks.length === 0) {
+        container.innerHTML = '';
+        noTasks.style.display = 'block';
+        return;
+    }
+    
+    noTasks.style.display = 'none';
+    
+    // Trier par date de création (plus récent en premier)
+    tasks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    container.innerHTML = tasks.map(task => createTaskCard(task)).join('');
+}
+
+function createTaskCard(task) {
+    const createdAt = new Date(task.created_at).toLocaleString('fr-FR');
+    const updatedAt = new Date(task.updated_at).toLocaleString('fr-FR');
+    
+    const progress = task.total > 0 ? Math.round((task.progress / task.total) * 100) : 0;
+    
+    let statusBadge, statusIcon, progressBar;
+    
+    switch(task.status) {
+        case 'running':
+            statusBadge = '<span class="badge bg-label-primary">En cours</span>';
+            statusIcon = 'bx-loader-alt bx-spin';
+            progressBar = `
+                <div class="progress mb-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         style="width: ${progress}%"></div>
+                </div>
+                <small class="text-muted">${task.progress}/${task.total} (${progress}%)</small>
+            `;
+            break;
+        case 'completed':
+            statusBadge = '<span class="badge bg-label-success">Terminée</span>';
+            statusIcon = 'bx-check-circle';
+            progressBar = `
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                </div>
+                <small class="text-success">Terminée avec succès</small>
+            `;
+            break;
+        case 'error':
+            statusBadge = '<span class="badge bg-label-danger">Erreur</span>';
+            statusIcon = 'bx-x-circle';
+            progressBar = `
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-danger" style="width: 100%"></div>
+                </div>
+                <small class="text-danger">Erreur: ${task.error || 'Erreur inconnue'}</small>
+            `;
+            break;
+        case 'stopped':
+            statusBadge = '<span class="badge bg-label-warning">Arrêtée</span>';
+            statusIcon = 'bx-stop-circle';
+            progressBar = `
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-warning" style="width: ${progress}%"></div>
+                </div>
+                <small class="text-warning">Arrêtée par l'utilisateur</small>
+            `;
+            break;
+        default:
+            statusBadge = '<span class="badge bg-label-secondary">Inconnue</span>';
+            statusIcon = 'bx-question-mark';
+            progressBar = '';
+    }
+    
+    const canStop = task.status === 'running' && task.can_stop;
+    const stopButton = canStop ? 
+        `<button class="btn btn-danger btn-sm" onclick="stopTask('${task.id}')">
+            <i class="bx bx-stop"></i> Arrêter
+        </button>` : '';
+    
+    return `
+        <div class="card mb-3 ${task.status === 'running' ? 'border-primary' : ''}">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-1 text-center">
+                        <i class="bx ${statusIcon} bx-lg text-primary"></i>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="mb-1">
+                            ${task.description}
+                            ${statusBadge}
+                        </h6>
+                        <small class="text-muted">
+                            <i class="bx bx-category-alt"></i> ${task.type} | 
+                            <i class="bx bx-time"></i> Créée: ${createdAt}
+                        </small>
+                        ${task.current_item ? `<br><small class="text-info">${task.current_item}</small>` : ''}
+                    </div>
+                    <div class="col-md-3">
+                        ${progressBar}
+                    </div>
+                    <div class="col-md-1 text-end">
+                        ${stopButton}
+                        <button class="btn btn-outline-secondary btn-sm" onclick="showTaskDetails('${task.id}')">
+                            <i class="bx bx-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function stopTask(taskId) {
+    if (!confirm('Êtes-vous sûr de vouloir arrêter cette tâche ?')) {
+        return;
+    }
+    
+    fetch(`/api/tasks/${taskId}/stop`, { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Tâche arrêtée avec succès', 'success');
+                loadTasks(); // Refresh immediately
+            } else {
+                showAlert(result.error || 'Erreur lors de l\'arrêt', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function stopAllTasks() {
+    if (!confirm('Êtes-vous sûr de vouloir arrêter TOUTES les tâches en cours ?')) {
+        return;
+    }
+    
+    fetch('/api/tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            const runningTasks = tasks.filter(t => t.status === 'running');
+            
+            if (runningTasks.length === 0) {
+                showAlert('Aucune tâche en cours à arrêter', 'info');
+                return;
+            }
+            
+            Promise.all(
+                runningTasks.map(task => 
+                    fetch(`/api/tasks/${task.id}/stop`, { method: 'POST' })
+                )
+            ).then(() => {
+                showAlert(`${runningTasks.length} tâche(s) arrêtée(s)`, 'success');
+                loadTasks();
+            });
+        });
+}
+
+function refreshTasks() {
+    loadTasks();
+    showAlert('Tâches actualisées', 'info');
+}
+
+function showTaskDetails(taskId) {
+    fetch(`/api/tasks/${taskId}`)
+        .then(response => response.json())
+        .then(task => {
+            alert(`Détails de la tâche:
+            
+ID: ${task.id}
+Type: ${task.type}
+Description: ${task.description}
+Statut: ${task.status}
+Progrès: ${task.progress}/${task.total}
+Créée: ${new Date(task.created_at).toLocaleString('fr-FR')}
+Mise à jour: ${new Date(task.updated_at).toLocaleString('fr-FR')}
+${task.error ? 'Erreur: ' + task.error : ''}
+${task.current_item ? 'Élément actuel: ' + task.current_item : ''}`);
+        });
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'info' ? 'alert-info' : 
+                     type === 'warning' ? 'alert-warning' : 'alert-danger';
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+             style="top: 20px; right: 20px; z-index: 9999;" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', alertHtml);
+    
+    setTimeout(() => {
+        const alert = document.querySelector('.alert');
+        if (alert) alert.remove();
+    }, 3000);
+}
+
+// Arrêter l'auto-refresh quand on quitte la page
+window.addEventListener('beforeunload', function() {
+    stopAutoRefresh();
+});
+</script>
+{% endblock %}

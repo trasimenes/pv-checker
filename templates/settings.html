@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block title %}Paramètres - Pierre & Vacances Image Checker{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="bx bx-cog me-2"></i>Paramètres de Catégorisation
+        </h5>
+        <button class="btn btn-primary" onclick="showAddMappingModal()">
+          <i class="bx bx-plus me-2"></i>Ajouter une correspondance
+        </button>
+      </div>
+      <div class="card-body">
+        <p class="text-muted">
+          Configure les mots-clés qui déterminent automatiquement la catégorie des destinations lors du scraping.
+          Les mots-clés sont recherchés dans l'URL et le titre des pages.
+        </p>
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bx bx-search"></i></span>
+              <input type="text" class="form-control" placeholder="Rechercher un mot-clé..." id="search-mappings" onkeyup="filterMappings()">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" id="filter-category" onchange="filterMappings()">
+              <option value="">Toutes catégories</option>
+              <option value="destination">🏖️ Destinations</option>
+              <option value="offre">⚡ Offres</option>
+              <option value="editorial">📝 Editorial</option>
+              <option value="sejour">🏨 Séjours</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" id="filter-language" onchange="filterMappings()">
+              <option value="">Toutes langues</option>
+              <option value="all">Toutes</option>
+              <option value="fr">Français</option>
+              <option value="en">Anglais</option>
+              <option value="nl">Néerlandais</option>
+              <option value="de">Allemand</option>
+              <option value="es">Espagnol</option>
+              <option value="it">Italien</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Mot-clé</th>
+                <th>Catégorie</th>
+                <th>Langue</th>
+                <th>Créé le</th>
+                <th>Modifié le</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="mappings-tbody">
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="no-mappings" style="display: none;" class="text-center py-5">
+          <i class="bx bx-cog bx-lg text-muted"></i>
+          <h6 class="mt-3 text-muted">Aucune correspondance trouvée</h6>
+          <p class="text-muted">Ajoutez des correspondances pour configurer la catégorisation automatique.</p>
+          <button class="btn btn-primary" onclick="showAddMappingModal()">
+            <i class="bx bx-plus me-2"></i>Ajouter une correspondance
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Mapping Modal -->
+<div class="modal fade" id="mappingModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mappingModalTitle">Ajouter une correspondance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="mappingForm">
+          <input type="hidden" id="mapping-id">
+          <div class="mb-3">
+            <label for="mapping-keyword" class="form-label">Mot-clé *</label>
+            <input type="text" class="form-control" id="mapping-keyword" required>
+            <div class="form-text">Le mot-clé à rechercher dans l'URL (ex: "last-minute", "a-voir-a-faire")</div>
+          </div>
+          <div class="mb-3">
+            <label for="mapping-category" class="form-label">Catégorie *</label>
+            <select class="form-select" id="mapping-category" required>
+              <option value="">Sélectionner une catégorie</option>
+              <option value="destination">🏖️ Destination</option>
+              <option value="offre">⚡ Offre</option>
+              <option value="editorial">📝 Editorial</option>
+              <option value="sejour">🏨 Séjour</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="mapping-language" class="form-label">Langue</label>
+            <select class="form-select" id="mapping-language">
+              <option value="all">Toutes les langues</option>
+              <option value="fr">Français</option>
+              <option value="en">Anglais</option>
+              <option value="nl">Néerlandais</option>
+              <option value="de">Allemand</option>
+              <option value="es">Espagnol</option>
+              <option value="it">Italien</option>
+            </select>
+            <div class="form-text">Spécifiez une langue pour des correspondances plus précises</div>
+          </div>
+        </form>
+        
+        <div class="alert alert-info">
+          <i class="bx bx-info-circle me-2"></i>
+          <strong>Exemples de mots-clés :</strong>
+          <ul class="mb-0 mt-2">
+            <li><strong>Offres :</strong> last-minute, promo, special, voyage</li>
+            <li><strong>Editorial :</strong> a-voir-a-faire, guide, activite, culture</li>
+            <li><strong>Séjours :</strong> sejour, weekend, package, formule</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" onclick="saveMapping()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentMappings = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadMappings();
+});
+
+function loadMappings() {
+    console.log('Loading mappings...');
+    fetch('/api/settings/mappings')
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(mappings => {
+            console.log('Mappings loaded:', mappings.length);
+            currentMappings = mappings;
+            displayMappings(mappings);
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des correspondances: ' + error.message, 'error');
+        });
+}
+
+function displayMappings(mappings) {
+    console.log('Displaying mappings:', mappings.length);
+    const tbody = document.getElementById('mappings-tbody');
+    const noMappings = document.getElementById('no-mappings');
+    
+    if (mappings.length === 0) {
+        console.log('No mappings to display');
+        tbody.innerHTML = '';
+        noMappings.style.display = 'block';
+        return;
+    }
+    
+    console.log('Showing mappings table');
+    noMappings.style.display = 'none';
+    tbody.innerHTML = '';
+    
+    mappings.forEach(mapping => {
+        const row = tbody.insertRow();
+        
+        const createdDate = new Date(mapping.created_at).toLocaleDateString('fr-FR');
+        const updatedDate = new Date(mapping.updated_at).toLocaleDateString('fr-FR');
+        
+        const categoryBadge = getCategoryBadge(mapping.category);
+        const languageBadge = mapping.language === 'all' ? 
+            '<span class="badge bg-label-secondary">Toutes</span>' :
+            `<span class="badge bg-label-primary">${mapping.language.toUpperCase()}</span>`;
+        
+        row.innerHTML = `
+            <td>
+                <code>${mapping.keyword}</code>
+            </td>
+            <td>${categoryBadge}</td>
+            <td>${languageBadge}</td>
+            <td>${createdDate}</td>
+            <td>${updatedDate}</td>
+            <td>
+                <div class="dropdown">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="editMapping(${mapping.id})">
+                            <i class="bx bx-edit me-1"></i> Modifier
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="deleteMapping(${mapping.id})">
+                            <i class="bx bx-trash me-1"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+            </td>
+        `;
+    });
+}
+
+function getCategoryBadge(category) {
+    const categories = {
+        'destination': '<span class="badge bg-label-primary">🏖️ Destination</span>',
+        'offre': '<span class="badge bg-label-warning">⚡ Offre</span>',
+        'editorial': '<span class="badge bg-label-info">📝 Editorial</span>',
+        'sejour': '<span class="badge bg-label-success">🏨 Séjour</span>'
+    };
+    return categories[category] || categories['destination'];
+}
+
+function filterMappings() {
+    const searchTerm = document.getElementById('search-mappings').value.toLowerCase();
+    const categoryFilter = document.getElementById('filter-category').value;
+    const languageFilter = document.getElementById('filter-language').value;
+    
+    const filtered = currentMappings.filter(mapping => {
+        const matchesSearch = searchTerm === '' || 
+            mapping.keyword.toLowerCase().includes(searchTerm);
+        
+        const matchesCategory = categoryFilter === '' || 
+            mapping.category === categoryFilter;
+            
+        const matchesLanguage = languageFilter === '' || 
+            mapping.language === languageFilter;
+        
+        return matchesSearch && matchesCategory && matchesLanguage;
+    });
+    
+    displayMappings(filtered);
+}
+
+function showAddMappingModal() {
+    document.getElementById('mappingModalTitle').textContent = 'Ajouter une correspondance';
+    document.getElementById('mappingForm').reset();
+    document.getElementById('mapping-id').value = '';
+    new bootstrap.Modal(document.getElementById('mappingModal')).show();
+}
+
+function editMapping(id) {
+    const mapping = currentMappings.find(m => m.id === id);
+    if (!mapping) return;
+    
+    document.getElementById('mappingModalTitle').textContent = 'Modifier la correspondance';
+    document.getElementById('mapping-id').value = mapping.id;
+    document.getElementById('mapping-keyword').value = mapping.keyword;
+    document.getElementById('mapping-category').value = mapping.category;
+    document.getElementById('mapping-language').value = mapping.language;
+    
+    new bootstrap.Modal(document.getElementById('mappingModal')).show();
+}
+
+function saveMapping() {
+    const form = document.getElementById('mappingForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const data = {
+        id: document.getElementById('mapping-id').value,
+        keyword: document.getElementById('mapping-keyword').value,
+        category: document.getElementById('mapping-category').value,
+        language: document.getElementById('mapping-language').value
+    };
+    
+    const url = data.id ? '/api/settings/mappings' : '/api/settings/mappings';
+    const method = data.id ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('Correspondance sauvegardée avec succès', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('mappingModal')).hide();
+            loadMappings();
+        } else {
+            showAlert(result.error || 'Erreur lors de la sauvegarde', 'error');
+        }
+    });
+}
+
+function deleteMapping(id) {
+    const mapping = currentMappings.find(m => m.id === id);
+    if (!confirm(`Êtes-vous sûr de vouloir supprimer la correspondance "${mapping.keyword}" ?`)) {
+        return;
+    }
+    
+    fetch(`/api/settings/mappings/${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Correspondance supprimée', 'success');
+                loadMappings();
+            } else {
+                showAlert(result.error || 'Erreur lors de la suppression', 'error');
+            }
+        });
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    const container = document.querySelector('.container-xxl');
+    container.insertAdjacentHTML('afterbegin', alertHtml);
+    
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) alert.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,1236 @@
+{% extends "base.html" %}
+
+{% block title %}Historique des Vérifications - Pierre & Vacances Image Checker{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
+
+<style>
+/* Sélecteur de date */
+.scan-selector {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.scan-item {
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.scan-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.scan-item.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+/* Tabs pour analytics */
+.nav-tabs .nav-link {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* Cartes de statistiques */
+.stats-card {
+    transition: transform 0.2s ease;
+}
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Graphiques */
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* Export buttons */
+.export-buttons {
+    gap: 10px;
+}
+
+/* Changements dans comparaison */
+.change-badge {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.change-fixed { background-color: #28a745; color: white; }
+.change-broken { background-color: #dc3545; color: white; }
+.change-improved { background-color: #17a2b8; color: white; }
+.change-degraded { background-color: #ffc107; color: #212529; }
+.change-new { background-color: #6610f2; color: white; }
+.change-removed { background-color: #6c757d; color: white; }
+
+/* Image hover comme dans index.html */
+.image-hover-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.image-hover-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    background: white;
+    border: 3px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    padding: 8px;
+    display: none;
+    width: 500px;
+    height: 500px;
+    pointer-events: none;
+}
+
+.image-hover-popup img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+.image-hover-container:hover .image-hover-popup {
+    display: block;
+    animation: fadeInScale 0.2s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.thumbnail-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.thumbnail-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .image-hover-popup {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-hover-popup {
+        width: 300px;
+        height: 300px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Sélecteur de scans par date -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Sélectionner un Scan</h5>
+      </div>
+      <div class="card-body">
+        <div class="scan-selector" id="scan-list">
+          <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <button class="btn btn-primary btn-sm w-100 mb-2" onclick="compareScans()">
+            <i class="bx bx-git-compare me-1"></i>Comparer 2 scans
+          </button>
+          <button class="btn btn-success btn-sm w-100" onclick="showImportModal()">
+            <i class="bx bx-import me-1"></i>Importer JSON
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9">
+    <!-- Tabs pour navigation -->
+    <ul class="nav nav-tabs mb-3" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview-tab">
+          <i class="bx bx-home me-1"></i>Vue d'ensemble
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#analytics-tab">
+          <i class="bx bx-bar-chart-alt-2 me-1"></i>Analytics
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#compare-tab">
+          <i class="bx bx-git-compare me-1"></i>Comparaison
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Vue d'ensemble Tab -->
+      <div class="tab-pane fade show active" id="overview-tab">
+        <!-- Statistiques en en-tête -->
+        <div class="row mb-4">
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-primary">
+                      <i class="bx bx-globe"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Total</small>
+                    <h5 class="card-title mb-0" id="total-count">0</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-success">
+                      <i class="bx bx-check-circle"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Succès</small>
+                    <h5 class="card-title mb-0" id="success-count">0</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-warning">
+                      <i class="bx bx-error"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Warnings</small>
+                    <h5 class="card-title mb-0" id="warning-count">0</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-danger">
+                      <i class="bx bx-x-circle"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Erreurs</small>
+                    <h5 class="card-title mb-0" id="error-count">0</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-info">
+                      <i class="bx bx-image"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Placeholders</small>
+                    <h5 class="card-title mb-0" id="placeholder-count">0</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-md-4 col-6 mb-3">
+            <div class="card stats-card">
+              <div class="card-body">
+                <div class="d-flex align-items-center">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-secondary">
+                      <i class="bx bx-percentage"></i>
+                    </span>
+                  </div>
+                  <div class="ms-3">
+                    <small class="text-muted d-block">Taux OK</small>
+                    <h5 class="card-title mb-0" id="success-rate">0%</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Filtres</h5>
+            <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()">
+              <i class="bx bx-reset me-1"></i>Réinitialiser
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="form-label">Domaine</label>
+                <select class="form-select" id="domain-filter" onchange="applyFilters()">
+                  <option value="">Tous les domaines</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Région</label>
+                <select class="form-select" id="region-filter" onchange="applyFilters()">
+                  <option value="">Toutes les régions</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Statut</label>
+                <select class="form-select" id="status-filter" onchange="applyFilters()">
+                  <option value="">Tous les statuts</option>
+                  <option value="success">Succès</option>
+                  <option value="warning">Avertissement</option>
+                  <option value="error">Erreur</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Images</label>
+                <select class="form-select" id="image-filter" onchange="applyFilters()">
+                  <option value="">Toutes</option>
+                  <option value="with">Avec images</option>
+                  <option value="without">Sans images</option>
+                  <option value="placeholder">Avec placeholders</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tableau des résultats -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Résultats du Scan</h5>
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary btn-sm" onclick="exportCurrentScan('pdf')">
+                <i class="bx bx-file-pdf me-1"></i>PDF
+              </button>
+              <button class="btn btn-success btn-sm" onclick="exportCurrentScan('excel')">
+                <i class="bx bx-file me-1"></i>Excel
+              </button>
+              <button class="btn btn-info btn-sm" onclick="exportCurrentScan('json')">
+                <i class="bx bx-code me-1"></i>JSON
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="historiqueTable" class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>URL</th>
+                    <th>Statut</th>
+                    <th>Images</th>
+                    <th>Aperçu</th>
+                    <th>Titre</th>
+                    <th>Erreur</th>
+                  </tr>
+                </thead>
+                <tbody id="historique-tbody">
+                  <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics Tab -->
+      <div class="tab-pane fade" id="analytics-tab">
+        <div class="row">
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Répartition par Domaine</h5>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="domainChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Répartition par Région</h5>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="regionChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 mb-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Top 10 Destinations avec Problèmes</h5>
+              </div>
+              <div class="card-body">
+                <div id="problem-destinations">
+                  <!-- Sera rempli dynamiquement -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparaison Tab -->
+      <div class="tab-pane fade" id="compare-tab">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Comparaison entre Scans</h5>
+          </div>
+          <div class="card-body">
+            <div class="row mb-4">
+              <div class="col-md-5">
+                <label class="form-label">Scan 1 (Ancien)</label>
+                <select class="form-select" id="compare-scan1">
+                  <option value="">Sélectionner un scan...</option>
+                </select>
+              </div>
+              <div class="col-md-2 text-center d-flex align-items-end">
+                <button class="btn btn-primary w-100" onclick="executeComparison()">
+                  <i class="bx bx-analyse"></i> Comparer
+                </button>
+              </div>
+              <div class="col-md-5">
+                <label class="form-label">Scan 2 (Récent)</label>
+                <select class="form-select" id="compare-scan2">
+                  <option value="">Sélectionner un scan...</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="comparison-results" style="display: none;">
+              <!-- Résumé des changements -->
+              <div class="row mb-4" id="comparison-summary">
+                <!-- Sera rempli dynamiquement -->
+              </div>
+
+              <!-- Détails des changements -->
+              <div class="accordion" id="comparison-details">
+                <!-- Sera rempli dynamiquement -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal d'import JSON -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importModalLabel">
+          <i class="bx bx-import me-2"></i>Importer un Scan JSON
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="importForm" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="jsonFile" class="form-label">Fichier JSON</label>
+              <input type="file" class="form-control" id="jsonFile" name="file" accept=".json" required>
+              <div class="form-text">
+                Formats acceptés: 
+                <code>[{...}, {...}]</code> ou <code>{"results": [{...}, {...}]}</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="customDate" class="form-label">Date de référence</label>
+              <input type="text" class="form-control" id="customDate" name="custom_date" placeholder="DD/MM/YYYY">
+              <div class="form-text">Format: DD/MM/YYYY (ex: 23/07/2025) - Laisser vide pour utiliser la date actuelle</div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="customTime" class="form-label">Heure de référence</label>
+              <input type="time" class="form-control" id="customTime" name="custom_time" value="12:00">
+              <div class="form-text">Format: HH:MM (ex: 14:30)</div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="description" class="form-label">Description (optionnel)</label>
+            <input type="text" class="form-control" id="description" name="description" 
+                   placeholder="Ex: Scan avant correction, Données de production, etc.">
+            <div class="form-text">Cette description aidera à identifier le scan</div>
+          </div>
+          
+          <div class="alert alert-info">
+            <h6><i class="bx bx-info-circle me-1"></i>Informations</h6>
+            <ul class="mb-0">
+              <li>Le fichier JSON doit contenir des données de scan compatibles</li>
+              <li>Les champs requis: <code>url</code>, <code>status</code>, <code>images_found</code></li>
+              <li>Le scan sera ajouté à l'historique avec la date spécifiée</li>
+              <li>Vous pourrez ensuite le comparer avec d'autres scans</li>
+            </ul>
+          </div>
+          
+          <div id="importProgress" style="display: none;">
+            <div class="d-flex align-items-center">
+              <div class="spinner-border spinner-border-sm me-2" role="status">
+                <span class="visually-hidden">Import en cours...</span>
+              </div>
+              <span>Import en cours...</span>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-success" onclick="executeImport()">
+          <i class="bx bx-import me-1"></i>Importer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<script>
+let allScans = [];
+let currentScan = null;
+let allData = [];
+let filteredData = [];
+let domainChart = null;
+let regionChart = null;
+
+// Charger les scans disponibles au démarrage
+document.addEventListener('DOMContentLoaded', function() {
+    loadAvailableScans();
+});
+
+function loadAvailableScans() {
+    fetch('/api/historique/scans')
+        .then(response => response.json())
+        .then(data => {
+            allScans = data.scans;
+            displayScanList();
+            populateCompareSelects();
+            
+            // Charger automatiquement le dernier scan
+            if (allScans.length > 0) {
+                loadScan(allScans[0].filename);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des scans:', error);
+        });
+}
+
+function displayScanList() {
+    const scanList = document.getElementById('scan-list');
+    
+    if (allScans.length === 0) {
+        scanList.innerHTML = '<p class="text-muted text-center">Aucun scan disponible</p>';
+        return;
+    }
+    
+    let html = '';
+    allScans.forEach((scan, index) => {
+        const isImported = scan.filename.includes('_imported');
+        const importBadge = isImported ? '<i class="bx bx-import text-success ms-1" title="Scan importé"></i>' : '';
+        
+        html += `
+            <div class="scan-item ${index === 0 ? 'active' : ''}" onclick="loadScan('${scan.filename}')">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${scan.date}</strong>
+                        <small class="text-muted ms-2">${scan.time}</small>
+                        ${importBadge}
+                    </div>
+                    <span class="badge bg-info">${scan.total_destinations}</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    scanList.innerHTML = html;
+}
+
+function loadScan(filename) {
+    // Mettre à jour l'UI
+    document.querySelectorAll('.scan-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    event.target.closest('.scan-item').classList.add('active');
+    
+    // Charger les données du scan
+    fetch(`/api/historique/scan/${filename}`)
+        .then(response => response.json())
+        .then(data => {
+            currentScan = data;
+            allData = data.results;
+            filteredData = [...allData];
+            
+            updateStatistics(data.statistics);
+            updateFilters(data.domains, data.regions);
+            updateTable();
+            updateAnalytics(data.domains, data.regions);
+            findProblemDestinations();
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement du scan:', error);
+        });
+}
+
+function updateStatistics(stats) {
+    document.getElementById('total-count').textContent = stats.total;
+    document.getElementById('success-count').textContent = stats.success;
+    document.getElementById('warning-count').textContent = stats.warning;
+    document.getElementById('error-count').textContent = stats.error;
+    document.getElementById('placeholder-count').textContent = stats.placeholders;
+    document.getElementById('success-rate').textContent = stats.success_rate + '%';
+}
+
+function updateFilters(domains, regions) {
+    // Mettre à jour le filtre domaine
+    const domainFilter = document.getElementById('domain-filter');
+    domainFilter.innerHTML = '<option value="">Tous les domaines</option>';
+    domains.forEach(domain => {
+        domainFilter.innerHTML += `<option value="${domain.name}">${domain.name} (${domain.total})</option>`;
+    });
+    
+    // Mettre à jour le filtre région
+    const regionFilter = document.getElementById('region-filter');
+    regionFilter.innerHTML = '<option value="">Toutes les régions</option>';
+    regions.forEach(region => {
+        regionFilter.innerHTML += `<option value="${region.name}">${region.name} (${region.total})</option>`;
+    });
+}
+
+function applyFilters() {
+    const domainFilter = document.getElementById('domain-filter').value;
+    const regionFilter = document.getElementById('region-filter').value;
+    const statusFilter = document.getElementById('status-filter').value;
+    const imageFilter = document.getElementById('image-filter').value;
+    
+    filteredData = allData.filter(result => {
+        // Filtre domaine
+        if (domainFilter) {
+            const domain = result.url.split('/')[2];
+            const country = domain.split('.')[domain.split('.').length - 2];
+            if (country !== domainFilter) return false;
+        }
+        
+        // Filtre région
+        if (regionFilter) {
+            const urlParts = result.url.split('/');
+            if (urlParts.length > 4) {
+                const region = urlParts[4].split('_')[0];
+                if (region !== regionFilter) return false;
+            }
+        }
+        
+        // Filtre statut
+        if (statusFilter && result.status !== statusFilter) return false;
+        
+        // Filtre images
+        if (imageFilter === 'with' && result.images_found === 0) return false;
+        if (imageFilter === 'without' && result.images_found > 0) return false;
+        if (imageFilter === 'placeholder' && !result.has_placeholder) return false;
+        
+        return true;
+    });
+    
+    updateTable();
+}
+
+function resetFilters() {
+    document.getElementById('domain-filter').value = '';
+    document.getElementById('region-filter').value = '';
+    document.getElementById('status-filter').value = '';
+    document.getElementById('image-filter').value = '';
+    filteredData = [...allData];
+    updateTable();
+}
+
+function updateTable() {
+    const tbody = document.getElementById('historique-tbody');
+    tbody.innerHTML = '';
+
+    filteredData.forEach(result => {
+        const row = tbody.insertRow();
+        
+        // URL
+        const urlCell = row.insertCell();
+        const shortUrl = result.url.length > 60 ? result.url.substring(0, 60) + '...' : result.url;
+        urlCell.innerHTML = `<a href="${result.url}" target="_blank" title="${result.url}">${shortUrl}</a>`;
+        
+        // Statut
+        const statusCell = row.insertCell();
+        const statusClass = result.status === 'success' ? 'success' : 
+                          result.status === 'warning' ? 'warning' : 'danger';
+        const statusIcon = result.status === 'success' ? 'check-circle' : 
+                         result.status === 'warning' ? 'error' : 'x-circle';
+        statusCell.innerHTML = `<span class="badge bg-${statusClass}"><i class="bx bx-${statusIcon} me-1"></i>${result.status}</span>`;
+        
+        // Images
+        const imagesCell = row.insertCell();
+        imagesCell.innerHTML = `<span class="badge bg-info">${result.images_found}</span>
+                                ${result.has_placeholder ? '<span class="badge bg-warning ms-1">P</span>' : ''}`;
+        
+        // Aperçu
+        const previewCell = row.insertCell();
+        if (result.images && result.images.length > 0) {
+            const firstImage = result.images[0];
+            const thumbnailUrl = `/api/thumbnail?url=${encodeURIComponent(firstImage.src)}&size=60`;
+            
+            previewCell.innerHTML = `
+                <div class="image-hover-container">
+                    <img src="${thumbnailUrl}" 
+                         class="img-thumbnail thumbnail-hover ${firstImage.is_placeholder ? 'border-warning' : ''}" 
+                         style="width: 60px; height: 60px; object-fit: cover;"
+                         onerror="this.src='${firstImage.src}';"
+                         title="${firstImage.alt || 'Image de ' + (result.title || 'destination')}">
+                    <div class="image-hover-popup">
+                        <img src="${firstImage.src}" alt="${firstImage.alt || 'Image agrandie'}" />
+                    </div>
+                </div>
+            `;
+        } else {
+            previewCell.innerHTML = '<span class="text-muted">-</span>';
+        }
+        
+        // Titre
+        const titleCell = row.insertCell();
+        const shortTitle = result.title && result.title.length > 40 ? 
+                          result.title.substring(0, 40) + '...' : result.title || '-';
+        titleCell.innerHTML = `<span title="${result.title || ''}">${shortTitle}</span>`;
+        
+        // Erreur
+        const errorCell = row.insertCell();
+        if (result.error) {
+            const shortError = result.error.length > 30 ? result.error.substring(0, 30) + '...' : result.error;
+            errorCell.innerHTML = `<span class="text-danger" title="${result.error}">${shortError}</span>`;
+        } else {
+            errorCell.innerHTML = '-';
+        }
+    });
+}
+
+function updateAnalytics(domains, regions) {
+    // Graphique des domaines
+    const domainCtx = document.getElementById('domainChart').getContext('2d');
+    if (domainChart) domainChart.destroy();
+    
+    domainChart = new Chart(domainCtx, {
+        type: 'bar',
+        data: {
+            labels: domains.map(d => d.name),
+            datasets: [
+                {
+                    label: 'Succès',
+                    data: domains.map(d => d.success),
+                    backgroundColor: '#28a745'
+                },
+                {
+                    label: 'Avertissements',
+                    data: domains.map(d => d.warning),
+                    backgroundColor: '#ffc107'
+                },
+                {
+                    label: 'Erreurs',
+                    data: domains.map(d => d.error),
+                    backgroundColor: '#dc3545'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true }
+            }
+        }
+    });
+    
+    // Graphique des régions (top 10)
+    const topRegions = regions.sort((a, b) => b.total - a.total).slice(0, 10);
+    const regionCtx = document.getElementById('regionChart').getContext('2d');
+    if (regionChart) regionChart.destroy();
+    
+    regionChart = new Chart(regionCtx, {
+        type: 'doughnut',
+        data: {
+            labels: topRegions.map(r => r.name),
+            datasets: [{
+                data: topRegions.map(r => r.total),
+                backgroundColor: [
+                    '#007bff', '#28a745', '#ffc107', '#dc3545', '#17a2b8',
+                    '#6610f2', '#e83e8c', '#fd7e14', '#20c997', '#6c757d'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+}
+
+function findProblemDestinations() {
+    const problems = allData
+        .filter(d => d.status === 'error' || d.has_placeholder)
+        .sort((a, b) => {
+            if (a.status === 'error' && b.status !== 'error') return -1;
+            if (a.status !== 'error' && b.status === 'error') return 1;
+            return 0;
+        })
+        .slice(0, 10);
+    
+    const container = document.getElementById('problem-destinations');
+    let html = '<div class="list-group">';
+    
+    problems.forEach(dest => {
+        const badge = dest.status === 'error' ? 
+            '<span class="badge bg-danger">Erreur</span>' : 
+            '<span class="badge bg-warning">Placeholder</span>';
+        
+        html += `
+            <div class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <a href="${dest.url}" target="_blank" class="text-decoration-none">
+                            ${dest.title || dest.url}
+                        </a>
+                        <small class="text-muted d-block">${dest.error || 'Images placeholder détectées'}</small>
+                    </div>
+                    ${badge}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Fonctions de comparaison
+function populateCompareSelects() {
+    const select1 = document.getElementById('compare-scan1');
+    const select2 = document.getElementById('compare-scan2');
+    
+    const options = allScans.map(scan => 
+        `<option value="${scan.filename}">${scan.date} ${scan.time} (${scan.total_destinations} destinations)</option>`
+    ).join('');
+    
+    select1.innerHTML = '<option value="">Sélectionner un scan...</option>' + options;
+    select2.innerHTML = '<option value="">Sélectionner un scan...</option>' + options;
+}
+
+function executeComparison() {
+    const scan1 = document.getElementById('compare-scan1').value;
+    const scan2 = document.getElementById('compare-scan2').value;
+    
+    if (!scan1 || !scan2) {
+        alert('Veuillez sélectionner deux scans à comparer');
+        return;
+    }
+    
+    if (scan1 === scan2) {
+        alert('Veuillez sélectionner deux scans différents');
+        return;
+    }
+    
+    fetch('/api/historique/compare', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({scan1, scan2})
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayComparisonResults(data);
+    })
+    .catch(error => {
+        console.error('Erreur lors de la comparaison:', error);
+    });
+}
+
+function displayComparisonResults(data) {
+    document.getElementById('comparison-results').style.display = 'block';
+    
+    // Afficher le résumé
+    const summaryHtml = `
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-success">${data.summary.fixed}</h4>
+                    <small>Corrigés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-danger">${data.summary.broken}</h4>
+                    <small>Cassés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-info">${data.summary.improved}</h4>
+                    <small>Améliorés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-warning">${data.summary.degraded}</h4>
+                    <small>Dégradés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-primary">${data.summary.new}</h4>
+                    <small>Nouveaux</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 col-4 mb-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h4 class="mb-1 text-secondary">${data.summary.removed}</h4>
+                    <small>Supprimés</small>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('comparison-summary').innerHTML = summaryHtml;
+    
+    // Afficher les détails
+    let detailsHtml = '';
+    
+    // Destinations corrigées
+    if (data.changes.fixed.length > 0) {
+        detailsHtml += createChangeSection('fixed', 'Destinations Corrigées', 'success', data.changes.fixed);
+    }
+    
+    // Destinations cassées
+    if (data.changes.broken.length > 0) {
+        detailsHtml += createChangeSection('broken', 'Nouvelles Erreurs', 'danger', data.changes.broken);
+    }
+    
+    // Destinations améliorées
+    if (data.changes.improved.length > 0) {
+        detailsHtml += createChangeSection('improved', 'Destinations Améliorées', 'info', data.changes.improved);
+    }
+    
+    // Destinations dégradées
+    if (data.changes.degraded.length > 0) {
+        detailsHtml += createChangeSection('degraded', 'Destinations Dégradées', 'warning', data.changes.degraded);
+    }
+    
+    document.getElementById('comparison-details').innerHTML = detailsHtml;
+}
+
+function createChangeSection(type, title, color, changes) {
+    return `
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${type}-section">
+                    <span class="badge bg-${color} me-2">${changes.length}</span> ${title}
+                </button>
+            </h2>
+            <div id="${type}-section" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <div class="list-group">
+                        ${changes.map(change => `
+                            <div class="list-group-item">
+                                <a href="${change.url || change.before.url}" target="_blank">${change.url || change.before.url}</a>
+                                ${change.before && change.after ? `
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            Avant: ${change.before.status} | ${change.before.images_found} images
+                                            ${change.before.has_placeholder ? '| Placeholder' : ''}
+                                        </small><br>
+                                        <small class="text-success">
+                                            Après: ${change.after.status} | ${change.after.images_found} images
+                                            ${change.after.has_placeholder ? '| Placeholder' : ''}
+                                        </small>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Fonctions d'export
+function exportCurrentScan(format) {
+    if (!currentScan) return;
+    
+    const filename = currentScan.scan_info.filename.replace('.json', '');
+    
+    switch(format) {
+        case 'pdf':
+            exportToPDF(filteredData, filename);
+            break;
+        case 'excel':
+            exportToExcel(filteredData, filename);
+            break;
+        case 'json':
+            exportToJSON(filteredData, filename);
+            break;
+    }
+}
+
+function exportToPDF(data, filename) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    doc.setFontSize(20);
+    doc.text(`Pierre & Vacances - Scan du ${currentScan.scan_info.date}`, 20, 20);
+    
+    doc.setFontSize(12);
+    let y = 40;
+    
+    // Statistiques
+    doc.text(`Total: ${currentScan.statistics.total}`, 20, y);
+    y += 10;
+    doc.text(`Succès: ${currentScan.statistics.success}`, 20, y);
+    y += 10;
+    doc.text(`Avertissements: ${currentScan.statistics.warning}`, 20, y);
+    y += 10;
+    doc.text(`Erreurs: ${currentScan.statistics.error}`, 20, y);
+    y += 10;
+    doc.text(`Taux de succès: ${currentScan.statistics.success_rate}%`, 20, y);
+    
+    doc.save(`pv-scan-${filename}.pdf`);
+}
+
+function exportToExcel(data, filename) {
+    const ws = XLSX.utils.json_to_sheet(data.map(result => ({
+        'URL': result.url,
+        'Statut': result.status,
+        'Images trouvées': result.images_found,
+        'A des placeholders': result.has_placeholder ? 'Oui' : 'Non',
+        'Titre': result.title || '',
+        'Erreur': result.error || ''
+    })));
+    
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Scan");
+    
+    XLSX.writeFile(wb, `pv-scan-${filename}.xlsx`);
+}
+
+function exportToJSON(data, filename) {
+    const exportData = {
+        scan_info: currentScan.scan_info,
+        statistics: currentScan.statistics,
+        results: data
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `pv-scan-${filename}.json`;
+    link.click();
+}
+
+// Fonctions d'import JSON
+function showImportModal() {
+    const modal = new bootstrap.Modal(document.getElementById('importModal'));
+    modal.show();
+}
+
+function executeImport() {
+    const form = document.getElementById('importForm');
+    const formData = new FormData(form);
+    const fileInput = document.getElementById('jsonFile');
+    
+    // Vérifier qu'un fichier est sélectionné
+    if (!fileInput.files.length) {
+        alert('Veuillez sélectionner un fichier JSON');
+        return;
+    }
+    
+    // Afficher le progrès
+    document.getElementById('importProgress').style.display = 'block';
+    document.querySelector('button[onclick="executeImport()"]').disabled = true;
+    
+    fetch('/api/historique/import', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('importProgress').style.display = 'none';
+        document.querySelector('button[onclick="executeImport()"]').disabled = false;
+        
+        if (data.success) {
+            // Fermer le modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('importModal'));
+            modal.hide();
+            
+            // Afficher le message de succès
+            showSuccessMessage(data.message);
+            
+            // Recharger la liste des scans
+            loadAvailableScans();
+            
+            // Réinitialiser le formulaire
+            form.reset();
+            document.getElementById('customTime').value = '12:00';
+        } else {
+            showErrorMessage(data.error || 'Erreur lors de l\'import');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors de l\'import:', error);
+        document.getElementById('importProgress').style.display = 'none';
+        document.querySelector('button[onclick="executeImport()"]').disabled = false;
+        showErrorMessage('Erreur de connexion lors de l\'import');
+    });
+}
+
+function showSuccessMessage(message) {
+    // Créer une notification de succès
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    alertDiv.innerHTML = `
+        <i class="bx bx-check-circle me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Supprimer automatiquement après 5 secondes
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 5000);
+}
+
+function showErrorMessage(message) {
+    // Créer une notification d'erreur
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    alertDiv.innerHTML = `
+        <i class="bx bx-error me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Supprimer automatiquement après 8 secondes
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.parentNode.removeChild(alertDiv);
+        }
+    }, 8000);
+}
+
+// Gestionnaire pour la sélection de fichier (validation preview)
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('jsonFile');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Pré-remplir la description avec le nom du fichier
+                const descriptionInput = document.getElementById('description');
+                if (!descriptionInput.value) {
+                    descriptionInput.value = `Import: ${file.name}`;
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

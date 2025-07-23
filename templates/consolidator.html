@@ -1,0 +1,1199 @@
+{% extends "base.html" %}
+
+{% block title %}URL Consolidator - Pierre & Vacances Image Checker{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/libs/select2/select2.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">
+          <i class="bx bx-collection me-2"></i>Consolidateur de Destinations
+        </h5>
+        <div>
+          <button class="btn btn-info" onclick="createAutoSnapshot()">
+            <i class="bx bx-camera me-2"></i>Créer un snapshot
+          </button>
+          <button class="btn btn-success" onclick="startFullScraping()">
+            <i class="bx bx-globe me-2"></i>Scraper le catalogue complet
+          </button>
+          <button class="btn btn-primary" onclick="showAddDestinationModal()">
+            <i class="bx bx-plus me-2"></i>Ajouter une destination
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="card bg-primary text-white">
+              <div class="card-body text-center">
+                <i class="bx bx-map bx-lg"></i>
+                <h3 class="card-title text-white mt-2" id="total-destinations">0</h3>
+                <p class="card-text">Total Destinations</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-success text-white">
+              <div class="card-body text-center">
+                <i class="bx bx-check-circle bx-lg"></i>
+                <h3 class="card-title text-white mt-2" id="checked-destinations">0</h3>
+                <p class="card-text">Vérifiées</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card bg-warning text-white">
+              <div class="card-body text-center">
+                <i class="bx bx-image bx-lg"></i>
+                <h3 class="card-title text-white mt-2" id="placeholder-destinations">0</h3>
+                <p class="card-text">Avec Placeholders</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bx bx-search"></i></span>
+              <input type="text" class="form-control" placeholder="Rechercher une destination..." id="search-input" onkeyup="filterDestinations()">
+            </div>
+          </div>
+          <div class="col-md-2">
+            <select class="form-select" id="language-filter" onchange="filterDestinations()">
+              <option value="">Toutes les langues</option>
+              <option value="fr-fr">FR</option>
+              <option value="be-wl">BE-WL</option>
+              <option value="be-nl">BE-NL</option>
+              <option value="nl-nl">NL</option>
+              <option value="de-de">DE</option>
+              <option value="es-es">ES</option>
+              <option value="it-it">IT</option>
+              <option value="en-gb">GB</option>
+              <option value="fr-ch">CH</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <select class="form-select" id="category-filter" onchange="filterDestinations()">
+              <option value="">Toutes catégories</option>
+              <option value="destination">🏖️ Destinations</option>
+              <option value="offre">⚡ Offres</option>
+              <option value="editorial">📝 Editorial</option>
+              <option value="sejour">🏨 Séjours</option>
+            </select>
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="dropdown d-inline-block">
+              <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bx bx-download"></i> Export
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="exportDestinations('csv')">Export CSV</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="exportDestinationsJSON()">Export JSON (offline)</a></li>
+              </ul>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="showImportModal()">
+              <i class="bx bx-upload"></i> Import CSV
+            </button>
+            <div class="dropdown d-inline-block">
+              <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="bx bx-refresh"></i> Re-classifier
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="reclassifyOffline()">
+                  <i class="bx bx-shield"></i> Mode Offline (recommandé)
+                </a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="reclassifyCountries()">
+                  <i class="bx bx-globe"></i> Mode Online (avec HTTP)
+                </a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar for scraping -->
+        <div class="mb-3" id="scraping-progress" style="display: none;">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Scraping en cours...</span>
+            <span id="scraping-status">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                 role="progressbar" 
+                 id="scraping-bar"
+                 style="width: 0%">
+            </div>
+          </div>
+          <div class="mt-2">
+            <button class="btn btn-danger btn-sm" onclick="stopScraping()">
+              <i class="bx bx-stop"></i> Arrêter le scraping
+            </button>
+          </div>
+        </div>
+
+        <!-- Progress bar for reclassification -->
+        <div class="mb-3" id="reclassify-progress" style="display: none;">
+          <div class="d-flex justify-content-between mb-2">
+            <span id="reclassify-status-text">Re-classification en cours...</span>
+            <span id="reclassify-status-percent">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" 
+                 role="progressbar" 
+                 id="reclassify-bar"
+                 style="width: 0%">
+            </div>
+          </div>
+          <small class="text-muted mt-1" id="reclassify-current-url">Initialisation...</small>
+          <div class="mt-2">
+            <button class="btn btn-danger btn-sm" onclick="stopReclassification()">
+              <i class="bx bx-stop"></i> Arrêter la re-classification
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Country Tabs -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <ul class="nav nav-pills mb-3" id="country-tabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="all-tab" type="button" onclick="loadDestinationsByCountry('')">
+              <i class="bx bx-world"></i> Tous les pays
+            </button>
+          </li>
+        </ul>
+        
+        <!-- Category subcounts for current country/selection -->
+        <div class="d-flex gap-2 mb-3" id="category-subcounts" style="display: none;">
+          <div class="card border-secondary category-filter-card flex-fill" onclick="clearCategoryFilter()" style="cursor: pointer; min-width: 120px;">
+            <div class="card-body text-center p-2">
+              <div>🌐 <strong id="all-count">0</strong></div>
+              <small class="text-muted">Toutes</small>
+            </div>
+          </div>
+          <div class="card border-primary category-filter-card flex-fill" onclick="filterByCategory('destination')" style="cursor: pointer; min-width: 120px;">
+            <div class="card-body text-center p-2">
+              <div>🏖️ <strong id="dest-count">0</strong></div>
+              <small class="text-muted">Destinations</small>
+            </div>
+          </div>
+          <div class="card border-warning category-filter-card flex-fill" onclick="filterByCategory('offre')" style="cursor: pointer; min-width: 120px;">
+            <div class="card-body text-center p-2">
+              <div>⚡ <strong id="offre-count">0</strong></div>
+              <small class="text-muted">Offres</small>
+            </div>
+          </div>
+          <div class="card border-info category-filter-card flex-fill" onclick="filterByCategory('editorial')" style="cursor: pointer; min-width: 120px;">
+            <div class="card-body text-center p-2">
+              <div>📝 <strong id="editorial-count">0</strong></div>
+              <small class="text-muted">Editorial</small>
+            </div>
+          </div>
+          <div class="card border-success category-filter-card flex-fill" onclick="filterByCategory('sejour')" style="cursor: pointer; min-width: 120px;">
+            <div class="card-body text-center p-2">
+              <div>🏨 <strong id="sejour-count">0</strong></div>
+              <small class="text-muted">Séjours</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="country-tab-content">
+          <div class="tab-pane fade show active" id="all-content" role="tabpanel">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Destination</th>
+                    <th>Pays</th>
+                    <th>Langue</th>
+                    <th>Catégorie</th>
+                    <th>Type</th>
+                    <th>Statut</th>
+                    <th>Dernière vérification</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="destinations-tbody">
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <p class="text-muted mb-0">Affichage <span id="showing-start">0</span> - <span id="showing-end">0</span> sur <span id="showing-total">0</span> destinations</p>
+              </div>
+              <div class="col-md-6">
+                <nav aria-label="Page navigation">
+                  <ul class="pagination pagination-sm justify-content-end mb-0" id="pagination">
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Destination Modal -->
+<div class="modal fade" id="destinationModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="destinationModalTitle">Ajouter une destination</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="destinationForm">
+          <input type="hidden" id="destination-id">
+          <div class="mb-3">
+            <label for="destination-name" class="form-label">Nom de la destination *</label>
+            <input type="text" class="form-control" id="destination-name" required>
+          </div>
+          <div class="mb-3">
+            <label for="destination-url" class="form-label">URL *</label>
+            <input type="url" class="form-control" id="destination-url" required>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="destination-country" class="form-label">Pays *</label>
+                <select class="form-select" id="destination-country" required>
+                  <option value="">Sélectionner un pays</option>
+                  <option value="FR">France</option>
+                  <option value="ES">Espagne</option>
+                  <option value="IT">Italie</option>
+                  <option value="GR">Grèce</option>
+                  <option value="PT">Portugal</option>
+                  <option value="MT">Malte</option>
+                  <option value="MU">Maurice</option>
+                  <option value="RE">Réunion</option>
+                  <option value="AD">Andorre</option>
+                  <option value="GP">Guadeloupe</option>
+                  <option value="MQ">Martinique</option>
+                  <option value="BE">Belgique</option>
+                  <option value="NL">Pays-Bas</option>
+                  <option value="DE">Allemagne</option>
+                  <option value="AT">Autriche</option>
+                  <option value="CH">Suisse</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="destination-type" class="form-label">Type</label>
+                <select class="form-select" id="destination-type">
+                  <option value="residence">Résidence</option>
+                  <option value="hotel">Hôtel</option>
+                  <option value="villa">Villa</option>
+                  <option value="appartement">Appartement</option>
+                  <option value="camping">Camping</option>
+                  <option value="resort">Resort</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="destination-region" class="form-label">Région</label>
+                <input type="text" class="form-control" id="destination-region">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="destination-city" class="form-label">Ville</label>
+                <input type="text" class="form-control" id="destination-city">
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="destination-notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="destination-notes" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" onclick="saveDestination()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import CSV Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Importer des destinations (CSV)</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="csv-file" class="form-label">Fichier CSV</label>
+          <input type="file" class="form-control" id="csv-file" accept=".csv">
+          <div class="form-text">Format attendu: Nom, URL, Pays, Région, Ville, Type, Notes</div>
+        </div>
+        <div class="alert alert-info">
+          <i class="bx bx-info-circle me-2"></i>
+          Le fichier CSV doit contenir les colonnes: Nom, URL, Pays, Région, Ville, Type, Notes
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="button" class="btn btn-primary" onclick="importCSV()">Importer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentDestinations = [];
+let currentCountry = '';
+let currentPage = 1;
+const destinationsPerPage = 20;
+
+function getLanguageLabel(languageCode) {
+    const languages = {
+        'fr-fr': 'FR',
+        'be-wl': 'BE-WL', 
+        'be-nl': 'BE-NL',
+        'nl-nl': 'NL',
+        'de-de': 'DE',
+        'es-es': 'ES',
+        'it-it': 'IT',
+        'en-gb': 'GB',
+        'fr-ch': 'CH'
+    };
+    return languages[languageCode] || languageCode;
+}
+
+function getCategoryBadge(category) {
+    const categories = {
+        'destination': '<span class="badge bg-label-primary">🏖️ Destination</span>',
+        'offre': '<span class="badge bg-label-warning">⚡ Offre</span>',
+        'editorial': '<span class="badge bg-label-info">📝 Editorial</span>',
+        'sejour': '<span class="badge bg-label-success">🏨 Séjour</span>'
+    };
+    return categories[category] || categories['destination'];
+}
+
+// Load initial data
+document.addEventListener('DOMContentLoaded', function() {
+    loadCountries();
+    loadDestinationsByCountry('');
+    loadStats();
+    
+    // Check if there's an ongoing reclassification and restore the progress bar
+    checkReclassifyProgress();
+    checkScrapingProgress();
+});
+
+function loadCountries() {
+    fetch('/api/consolidator/countries')
+        .then(response => response.json())
+        .then(countries => {
+            const tabsContainer = document.getElementById('country-tabs');
+            
+            // Supprimer tous les onglets pays existants (garder seulement "Tous les pays")
+            const countryTabs = tabsContainer.querySelectorAll('li:not(:first-child)');
+            countryTabs.forEach(tab => tab.remove());
+            
+            countries.forEach(country => {
+                if (country.destination_count > 0) {
+                    const li = document.createElement('li');
+                    li.className = 'nav-item';
+                    li.innerHTML = `
+                        <button class="nav-link" type="button" 
+                                onclick="loadDestinationsByCountry('${country.code}')"
+                                data-country="${country.code}">
+                            <i class="${country.flag_icon} fis rounded-circle me-1"></i>
+                            ${country.name} (${country.destination_count})
+                        </button>
+                    `;
+                    tabsContainer.appendChild(li);
+                }
+            });
+        });
+}
+
+function loadDestinationsByCountry(country) {
+    currentCountry = country;
+    currentPage = 1;
+    
+    // Gérer l'état actif des onglets
+    document.querySelectorAll('#country-tabs .nav-link').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Activer l'onglet approprié
+    if (country === '') {
+        document.getElementById('all-tab').classList.add('active');
+    } else {
+        // Trouver et activer l'onglet du pays
+        const countryTab = document.querySelector(`#country-tabs button[onclick="loadDestinationsByCountry('${country}')"]`);
+        if (countryTab) {
+            countryTab.classList.add('active');
+        }
+    }
+    
+    const url = country ? `/api/consolidator/destinations/${country}` : '/api/consolidator/destinations';
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(destinations => {
+            console.log(`Loaded ${destinations.length} destinations for country: ${country}`);
+            currentDestinations = destinations;
+            // Premier chargement : calculer les vrais totaux
+            updateCategorySubcounts(destinations, false);
+            displayDestinations();
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showAlert('Erreur lors du chargement des destinations', 'error');
+        });
+}
+
+function displayDestinations() {
+    const tbody = document.getElementById('destinations-tbody');
+    tbody.innerHTML = '';
+    
+    console.log(`Displaying destinations: ${currentDestinations ? currentDestinations.length : 'undefined'} total`);
+    
+    if (!currentDestinations || currentDestinations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Aucune destination trouvée</td></tr>';
+        updateShowingInfo(0, 0, 0);
+        return;
+    }
+    
+    const start = (currentPage - 1) * destinationsPerPage;
+    const end = Math.min(start + destinationsPerPage, currentDestinations.length);
+    
+    console.log(`Showing items ${start + 1} to ${end} of ${currentDestinations.length}`);
+    
+    for (let i = start; i < end; i++) {
+        const dest = currentDestinations[i];
+        if (!dest) {
+            console.error(`Destination at index ${i} is undefined`);
+            continue;
+        }
+        
+        const row = tbody.insertRow();
+        
+        try {
+            const statusBadge = getStatusBadge(dest);
+            const lastChecked = dest.last_checked ? 
+                new Date(dest.last_checked).toLocaleDateString('fr-FR') : 
+                '<span class="text-muted">Jamais</span>';
+            
+            // Extract language from URL
+            const languageMatch = dest.url.match(/\/([a-z]{2}-[a-z]{2})\//);
+            const languageCode = languageMatch ? languageMatch[1] : 'N/A';
+            const languageLabel = getLanguageLabel(languageCode);
+            
+            // Get category badge
+            const categoryBadge = getCategoryBadge(dest.category || 'destination');
+            
+            row.innerHTML = `
+            <td>
+                <strong>${dest.name || 'Nom manquant'}</strong>
+                <br><small class="text-muted">${dest.url || 'URL manquante'}</small>
+            </td>
+            <td>
+                <i class="${dest.flag_icon || 'fi-fr'} fis rounded-circle me-1"></i>
+                ${dest.country_name || dest.country || 'Pays inconnu'}
+            </td>
+            <td><span class="badge bg-label-secondary">${languageLabel}</span></td>
+            <td>${categoryBadge}</td>
+            <td><span class="badge bg-label-info">${dest.type || 'N/A'}</span></td>
+            <td>${statusBadge}</td>
+            <td>${lastChecked}</td>
+            <td>
+                <div class="dropdown">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="editDestination(${dest.id})">
+                            <i class="bx bx-edit me-1"></i> Modifier
+                        </a>
+                        <a class="dropdown-item" href="${dest.url}" target="_blank">
+                            <i class="bx bx-link-external me-1"></i> Visiter
+                        </a>
+                        <a class="dropdown-item" href="javascript:void(0);" onclick="checkDestination('${dest.url}')">
+                            <i class="bx bx-search me-1"></i> Vérifier images
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="javascript:void(0);" onclick="deleteDestination(${dest.id})">
+                            <i class="bx bx-trash me-1"></i> Supprimer
+                        </a>
+                    </div>
+                </div>
+            </td>
+        `;
+        } catch (error) {
+            console.error(`Error rendering destination ${i}:`, error, dest);
+            row.innerHTML = '<td colspan="8" class="text-danger">Erreur d\'affichage pour cette destination</td>';
+        }
+    }
+    
+    updatePagination();
+    updateShowingInfo(start + 1, end, currentDestinations.length);
+}
+
+function getStatusBadge(dest) {
+    if (dest.last_checked) {
+        if (dest.has_placeholder) {
+            return '<span class="badge bg-label-warning"><i class="bx bx-error"></i> Placeholder</span>';
+        } else {
+            return '<span class="badge bg-label-success"><i class="bx bx-check"></i> OK</span>';
+        }
+    } else {
+        return '<span class="badge bg-label-secondary">Non vérifié</span>';
+    }
+}
+
+function updatePagination() {
+    const totalPages = Math.ceil(currentDestinations.length / destinationsPerPage);
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+    
+    console.log(`updatePagination: totalPages=${totalPages}, currentDestinations.length=${currentDestinations.length}, destinationsPerPage=${destinationsPerPage}`);
+    
+    if (totalPages <= 1) return;
+    
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="changePage(${currentPage - 1})">Précédent</a>`;
+    pagination.appendChild(prevLi);
+    
+    // Page numbers
+    for (let i = 1; i <= Math.min(totalPages, 10); i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="changePage(${i})">${i}</a>`;
+        pagination.appendChild(li);
+    }
+    
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="javascript:void(0);" onclick="changePage(${currentPage + 1})">Suivant</a>`;
+    pagination.appendChild(nextLi);
+}
+
+function changePage(page) {
+    const totalPages = Math.ceil(currentDestinations.length / destinationsPerPage);
+    if (page >= 1 && page <= totalPages) {
+        currentPage = page;
+        displayDestinations();
+    }
+}
+
+function updateShowingInfo(start, end, total) {
+    console.log(`updateShowingInfo: start=${start}, end=${end}, total=${total}, currentPage=${currentPage}, destinationsPerPage=${destinationsPerPage}`);
+    document.getElementById('showing-start').textContent = start;
+    document.getElementById('showing-end').textContent = end;
+    document.getElementById('showing-total').textContent = total;
+}
+
+function filterDestinations() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const languageFilter = document.getElementById('language-filter').value;
+    const categoryFilter = document.getElementById('category-filter').value;
+    
+    if (searchTerm === '' && languageFilter === '' && categoryFilter === '') {
+        loadDestinationsByCountry(currentCountry);
+    } else {
+        // Reload all destinations first to apply filters
+        const url = currentCountry ? `/api/consolidator/destinations/${currentCountry}` : '/api/consolidator/destinations';
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(allDestinations => {
+                const filtered = allDestinations.filter(dest => {
+                    // Search filter
+                    const matchesSearch = searchTerm === '' || 
+                        dest.name.toLowerCase().includes(searchTerm) || 
+                        dest.url.toLowerCase().includes(searchTerm) ||
+                        (dest.country_name && dest.country_name.toLowerCase().includes(searchTerm));
+                    
+                    // Language filter
+                    const matchesLanguage = languageFilter === '' || 
+                        dest.url.includes(`/${languageFilter}/`);
+                    
+                    // Category filter
+                    const matchesCategory = categoryFilter === '' || 
+                        (dest.category || 'destination') === categoryFilter;
+                    
+                    return matchesSearch && matchesLanguage && matchesCategory;
+                });
+                
+                currentDestinations = filtered;
+                currentPage = 1;
+                // Ne pas recalculer les totaux lors d'un filtrage
+                updateCategorySubcounts(filtered, true);
+                displayDestinations();
+            })
+            .catch(error => {
+                console.error('Erreur lors du filtrage:', error);
+            });
+    }
+}
+
+function startFullScraping() {
+    document.getElementById('scraping-progress').style.display = 'block';
+    
+    fetch('/api/consolidator/scrape-full', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Scraping complet démarré', 'success');
+                // Poll for progress
+                checkScrapingProgress();
+            } else {
+                showAlert(data.error || 'Erreur lors du démarrage du scraping', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+            document.getElementById('scraping-progress').style.display = 'none';
+        });
+}
+
+function checkScrapingProgress() {
+    fetch('/api/consolidator/scraping-status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.is_running) {
+                // Show progress bar if it's hidden
+                document.getElementById('scraping-progress').style.display = 'block';
+                
+                const progress = data.progress_percent || 0;
+                document.getElementById('scraping-bar').style.width = progress + '%';
+                document.getElementById('scraping-status').textContent = Math.round(progress) + '%';
+                
+                // Update status text if available
+                if (data.current_status) {
+                    const progressContainer = document.querySelector('#scraping-progress .d-flex span');
+                    if (progressContainer) {
+                        progressContainer.textContent = data.current_status;
+                    }
+                }
+                
+                // Store progress in localStorage for persistence
+                localStorage.setItem('scraping_progress', JSON.stringify({
+                    progress: progress,
+                    status: data.current_status,
+                    destinations_found: data.destinations_found,
+                    timestamp: Date.now()
+                }));
+                
+                setTimeout(checkScrapingProgress, 1000);
+            } else {
+                // Clear stored progress when finished
+                localStorage.removeItem('scraping_progress');
+                
+                // Only show final message if we were actually running
+                if (document.getElementById('scraping-progress').style.display === 'block') {
+                    document.getElementById('scraping-progress').style.display = 'none';
+                    const finalMessage = data.current_status || `Scraping terminé: ${data.destinations_found} destinations trouvées`;
+                    showAlert(finalMessage, data.destinations_found > 0 ? 'success' : 'warning');
+                    loadDestinationsByCountry(currentCountry);
+                    loadStats();
+                }
+            }
+        })
+        .catch(() => {
+            // Don't hide progress bar on error, just stop polling
+        });
+}
+
+function showAddDestinationModal() {
+    document.getElementById('destinationModalTitle').textContent = 'Ajouter une destination';
+    document.getElementById('destinationForm').reset();
+    document.getElementById('destination-id').value = '';
+    new bootstrap.Modal(document.getElementById('destinationModal')).show();
+}
+
+function editDestination(id) {
+    const dest = currentDestinations.find(d => d.id === id);
+    if (!dest) return;
+    
+    document.getElementById('destinationModalTitle').textContent = 'Modifier la destination';
+    document.getElementById('destination-id').value = dest.id;
+    document.getElementById('destination-name').value = dest.name;
+    document.getElementById('destination-url').value = dest.url;
+    document.getElementById('destination-country').value = dest.country;
+    document.getElementById('destination-type').value = dest.type || '';
+    document.getElementById('destination-region').value = dest.region || '';
+    document.getElementById('destination-city').value = dest.city || '';
+    document.getElementById('destination-notes').value = dest.notes || '';
+    
+    new bootstrap.Modal(document.getElementById('destinationModal')).show();
+}
+
+function saveDestination() {
+    const form = document.getElementById('destinationForm');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const data = {
+        id: document.getElementById('destination-id').value,
+        name: document.getElementById('destination-name').value,
+        url: document.getElementById('destination-url').value,
+        country: document.getElementById('destination-country').value,
+        type: document.getElementById('destination-type').value,
+        region: document.getElementById('destination-region').value,
+        city: document.getElementById('destination-city').value,
+        notes: document.getElementById('destination-notes').value
+    };
+    
+    const url = data.id ? '/api/consolidator/destinations' : '/api/consolidator/destinations';
+    const method = data.id ? 'PUT' : 'POST';
+    
+    fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert('Destination sauvegardée avec succès', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('destinationModal')).hide();
+            loadDestinationsByCountry(currentCountry);
+            loadStats();
+        } else {
+            showAlert(result.error || 'Erreur lors de la sauvegarde', 'error');
+        }
+    });
+}
+
+function deleteDestination(id) {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette destination ?')) return;
+    
+    fetch(`/api/consolidator/destinations/${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Destination supprimée', 'success');
+                loadDestinationsByCountry(currentCountry);
+                loadStats();
+            } else {
+                showAlert(result.error || 'Erreur lors de la suppression', 'error');
+            }
+        });
+}
+
+function exportDestinations(format) {
+    const url = currentCountry ? 
+        `/api/consolidator/export/${format}/${currentCountry}` : 
+        `/api/consolidator/export/${format}`;
+    
+    window.open(url, '_blank');
+}
+
+function showImportModal() {
+    new bootstrap.Modal(document.getElementById('importModal')).show();
+}
+
+function importCSV() {
+    const fileInput = document.getElementById('csv-file');
+    if (!fileInput.files[0]) {
+        showAlert('Veuillez sélectionner un fichier CSV', 'error');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('csv_file', fileInput.files[0]);
+    
+    fetch('/api/consolidator/import/csv', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert(`Import réussi: ${result.imported_count} destinations importées`, 'success');
+            bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+            loadDestinationsByCountry(currentCountry);
+            loadStats();
+        } else {
+            showAlert(result.error || 'Erreur lors de l\'import', 'error');
+        }
+    });
+}
+
+function checkDestination(url) {
+    // Redirect to image checker with specific URL
+    window.location.href = `/?check=${encodeURIComponent(url)}`;
+}
+
+function loadStats() {
+    fetch('/api/consolidator/stats')
+        .then(response => response.json())
+        .then(stats => {
+            document.getElementById('total-destinations').textContent = stats.total || 0;
+            document.getElementById('checked-destinations').textContent = stats.checked || 0;
+            document.getElementById('placeholder-destinations').textContent = stats.with_placeholders || 0;
+        });
+}
+
+function createAutoSnapshot() {
+    const now = new Date();
+    const versionName = `Auto-${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}h${now.getMinutes().toString().padStart(2, '0')}`;
+    
+    const data = {
+        version_name: versionName,
+        description: `Snapshot automatique créé depuis le consolidateur le ${now.toLocaleDateString('fr-FR')} à ${now.toLocaleTimeString('fr-FR')}`,
+        created_by: 'Consolidateur'
+    };
+    
+    fetch('/api/consolidator/snapshots', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert(`Snapshot "${versionName}" créé avec succès`, 'success');
+        } else {
+            showAlert(result.error || 'Erreur lors de la création du snapshot', 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('Erreur: ' + error, 'error');
+    });
+}
+
+function cleanupAvisUrls() {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer toutes les URLs contenant "/avis" ?')) {
+        return;
+    }
+    
+    fetch('/api/consolidator/cleanup/avis', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert(`${result.deleted_count} URLs d'avis supprimées avec succès`, 'success');
+                loadDestinationsByCountry(currentCountry);
+                loadStats();
+            } else {
+                showAlert(result.error || 'Erreur lors du nettoyage', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function reclassifyCountries() {
+    if (!confirm('Êtes-vous sûr de vouloir re-classifier toutes les destinations (pays ET catégories) ?\n\nCela utilisera les correspondances configurées dans les Paramètres avec threading 30x30.')) {
+        return;
+    }
+    
+    document.getElementById('reclassify-progress').style.display = 'block';
+    
+    fetch('/api/consolidator/reclassify-countries', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Re-classification démarrée (threading 30x30)', 'success');
+                // Poll for progress
+                checkReclassifyProgress();
+            } else {
+                showAlert(result.error || 'Erreur lors du démarrage de la re-classification', 'error');
+                document.getElementById('reclassify-progress').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+            document.getElementById('reclassify-progress').style.display = 'none';
+        });
+}
+
+function stopScraping() {
+    if (!confirm('Êtes-vous sûr de vouloir arrêter le scraping en cours ?')) {
+        return;
+    }
+    
+    fetch('/api/consolidator/stop-scraping', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Scraping arrêté', 'info');
+                document.getElementById('scraping-progress').style.display = 'none';
+            } else {
+                showAlert('Erreur lors de l\'arrêt du scraping', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function checkReclassifyProgress() {
+    fetch('/api/consolidator/reclassify-status')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Reclassify status:', data);
+            
+            if (data.is_running) {
+                // Show progress bar if it's hidden
+                document.getElementById('reclassify-progress').style.display = 'block';
+                
+                const progress = data.progress_percent || 0;
+                document.getElementById('reclassify-bar').style.width = progress + '%';
+                document.getElementById('reclassify-status-percent').textContent = Math.round(progress) + '%';
+                
+                // Update status text
+                if (data.current_status) {
+                    document.getElementById('reclassify-status-text').textContent = data.current_status;
+                }
+                
+                // Update current URL being processed
+                if (data.current_url) {
+                    document.getElementById('reclassify-current-url').textContent = 
+                        `${data.updated_count} mis à jour - URL: ${data.current_url}`;
+                } else {
+                    document.getElementById('reclassify-current-url').textContent = 
+                        `${data.updated_count} destinations mises à jour`;
+                }
+                
+                // Store progress in localStorage for persistence
+                localStorage.setItem('reclassify_progress', JSON.stringify({
+                    progress: progress,
+                    status: data.current_status,
+                    updated_count: data.updated_count,
+                    timestamp: Date.now()
+                }));
+                
+                setTimeout(checkReclassifyProgress, 1000); // 1 seconde
+            } else {
+                // Clear stored progress when finished
+                localStorage.removeItem('reclassify_progress');
+                
+                // Only show final message and reload if we were actually running
+                if (document.getElementById('reclassify-progress').style.display === 'block') {
+                    document.getElementById('reclassify-progress').style.display = 'none';
+                    const finalMessage = data.current_status || `Re-classification terminée: ${data.updated_count} destinations mises à jour`;
+                    
+                    // Only show success/info alerts, not error messages on page load
+                    if (!data.current_status || !data.current_status.includes('Erreur')) {
+                        showAlert(finalMessage, data.updated_count > 0 ? 'success' : 'info');
+                    }
+                    
+                    // Reload data
+                    loadCountries();
+                    loadDestinationsByCountry(currentCountry);
+                    loadStats();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erreur polling reclassify status:', error);
+            // Don't hide progress bar on error, just stop polling
+        });
+}
+
+
+function stopReclassification() {
+    if (!confirm('Êtes-vous sûr de vouloir arrêter la re-classification en cours ?')) {
+        return;
+    }
+    
+    fetch('/api/consolidator/stop-reclassification', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert('Re-classification arrêtée', 'info');
+                document.getElementById('reclassify-progress').style.display = 'none';
+            } else {
+                showAlert('Erreur lors de l\'arrêt de la re-classification', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function exportDestinationsJSON() {
+    showAlert('Export JSON en cours...', 'info');
+    
+    fetch('/api/consolidator/export/json')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert(`✅ ${result.message}`, 'success');
+                // Optionnellement, télécharger le fichier
+                if (confirm('Voulez-vous télécharger le fichier JSON exporté ?')) {
+                    window.open(result.filename, '_blank');
+                }
+            } else {
+                showAlert('Erreur lors de l\'export JSON: ' + result.error, 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function reclassifyOffline() {
+    if (!confirm('Lancer la re-classification en mode OFFLINE ?\n\nCe mode:\n✅ N\'envoie aucune requête HTTP\n✅ Utilise uniquement les données locales\n✅ Est beaucoup plus rapide\n✅ Ne risque pas de blacklist\n\nRecommandé pour re-classifier les catégories.')) {
+        return;
+    }
+    
+    fetch('/api/consolidator/reclassify-offline', { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                showAlert(result.message, 'success');
+                document.getElementById('reclassify-progress').style.display = 'block';
+                pollReclassifyStatus();
+            } else {
+                showAlert(result.error || 'Erreur lors du lancement', 'error');
+            }
+        })
+        .catch(error => {
+            showAlert('Erreur: ' + error, 'error');
+        });
+}
+
+function showAlert(message, type) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'info' ? 'alert-info' : 'alert-danger';
+    const alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    const container = document.querySelector('.container-xxl');
+    container.insertAdjacentHTML('afterbegin', alertHtml);
+    
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) alert.remove();
+    }, 5000);
+}
+
+// Variable globale pour stocker les compteurs totaux du pays actuel
+let countryCategoryCounts = {
+    total: 0,
+    destination: 0,
+    offre: 0,
+    editorial: 0,
+    sejour: 0
+};
+
+function updateCategorySubcounts(destinations, isFiltered = false) {
+    if (!isFiltered) {
+        // Si ce n'est pas filtré, calculer et stocker les vrais totaux
+        countryCategoryCounts = {
+            total: destinations.length,
+            destination: 0,
+            offre: 0,
+            editorial: 0,
+            sejour: 0
+        };
+        
+        destinations.forEach((dest) => {
+            const category = dest.category || 'destination';
+            
+            if (countryCategoryCounts.hasOwnProperty(category)) {
+                countryCategoryCounts[category]++;
+            } else {
+                countryCategoryCounts.destination++; // Default to destination for unknown categories
+            }
+        });
+    }
+    
+    // Toujours afficher les totaux du pays, pas les résultats filtrés
+    document.getElementById('all-count').textContent = countryCategoryCounts.total;
+    document.getElementById('dest-count').textContent = countryCategoryCounts.destination;
+    document.getElementById('offre-count').textContent = countryCategoryCounts.offre;
+    document.getElementById('editorial-count').textContent = countryCategoryCounts.editorial;
+    document.getElementById('sejour-count').textContent = countryCategoryCounts.sejour;
+    
+    // Show/hide subcounts based on whether we have destinations
+    const hasDestinations = countryCategoryCounts.total > 0;
+    document.getElementById('category-subcounts').style.display = hasDestinations ? 'block' : 'none';
+    
+    // Reset category filter card highlights
+    document.querySelectorAll('.category-filter-card').forEach(card => {
+        card.classList.remove('bg-light');
+    });
+    
+    // Highlight active filter if any
+    const activeFilter = document.getElementById('category-filter').value;
+    if (activeFilter) {
+        // Find the corresponding card and highlight it
+        document.querySelectorAll('.category-filter-card').forEach(card => {
+            if (card.onclick && card.onclick.toString().includes(`'${activeFilter}'`)) {
+                card.classList.add('bg-light');
+            }
+        });
+    }
+}
+
+function filterByCategory(category) {
+    // Set the category filter dropdown
+    document.getElementById('category-filter').value = category;
+    
+    // Highlight the selected category card
+    document.querySelectorAll('.category-filter-card').forEach(card => {
+        card.classList.remove('bg-light');
+    });
+    
+    // Find and highlight the clicked card
+    const clickedCard = event.currentTarget;
+    clickedCard.classList.add('bg-light');
+    
+    // Apply the filter
+    filterDestinations();
+}
+
+function clearCategoryFilter() {
+    // Clear the category filter
+    document.getElementById('category-filter').value = '';
+    
+    // Remove highlights from category cards
+    document.querySelectorAll('.category-filter-card').forEach(card => {
+        card.classList.remove('bg-light');
+    });
+    
+    // Highlight the "Toutes" card
+    document.querySelectorAll('.category-filter-card').forEach(card => {
+        if (card.onclick && card.onclick.toString().includes('clearCategoryFilter')) {
+            card.classList.add('bg-light');
+        }
+    });
+    
+    // Apply the filter
+    filterDestinations();
+}
+</script>
+{% endblock %}
