@@ -94,7 +94,46 @@ Pays (co_)
 - **7 étapes trackées** : Pages catalogue → Pays → Sitemaps → Dédoublonnage → Sauvegarde
 - **Interface AJAX** : Barre de progression + texte de statut
 
+## Architecture Base de Données (Nouveau - Janvier 2025)
+
+### Migration complète vers base de données SQLite
+- **TOUT en base** : Fini les fichiers JSON, toutes les données sont en base
+- **Préservation historique** : Aucune donnée n'est jamais écrasée, tout est consolidé
+- **Migration automatique** : Les anciens résultats JSON sont importés automatiquement une seule fois
+- **Statistiques historiques** : Suivi complet de l'évolution dans le temps
+
+### Table `verification_results`
+- **Historique complet** : Chaque URL peut avoir plusieurs vérifications datées
+- **Tags colorés** : Catégorie détectée (Pays, Région, Destination, Blog, etc.)
+- **Optimisation intelligente** : Support du groupement par destination similaire
+- **Statuts** : `pending`, `success`, `warning`, `error`
+- **Données riches** : Images, placeholders, pays, catégories, dates
+
+### Nouvelles API pour gestion historique
+- `POST /api/verification/populate-missing` : Peuple toutes les URLs manquantes en base
+- `GET /api/verification/stats` : Statistiques détaillées par statut/catégorie/pays
+- `GET /api/verification/unverified` : Liste des destinations jamais vérifiées
+- `GET /api/verification/history/<url>` : Historique complet d'une URL
+
+### Système de vérification optimisé
+- **Groupement intelligent** : "Saint-Anne" → vérifie une seule URL représentative
+- **Population complète** : Toutes les URLs restent en base avec statut "pending"
+- **Rate limiting adaptatif** : Ajustement automatique selon la réponse serveur
+- **Conservation historique** : Les 1,536+ analyses existantes préservées
+
+### Base de données methods
+```python
+# Gestion des résultats de vérification
+db.save_verification_result(result)           # Sauvegarde sans écraser
+db.get_all_verification_results()             # Dernier scan par URL
+db.get_verification_history_for_url(url)      # Historique complet d'une URL
+db.populate_missing_verification_urls()       # Peuple les URLs manquantes
+db.get_unverified_destinations()              # URLs jamais vérifiées
+db.get_verification_stats()                   # Stats complètes
+```
+
 ## Commandes de test
 - Lancer l'application : `python app.py`
 - Installer les dépendances : `pip install -r requirements.txt`
 - Accéder au consolidateur : `http://localhost:5000/consolidator`
+- Statistiques historiques : `http://localhost:5000/api/verification/stats`

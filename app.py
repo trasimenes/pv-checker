@@ -244,12 +244,18 @@ def start_check_from_database():
     data = request.get_json()
     scope = data.get('scope', 'all')
     country = data.get('country')
+    category = data.get('category')
     max_destinations = data.get('max_destinations')
+    optimize_verification = data.get('optimize_verification', False)
     
     # Créer une tâche
     task_description = f"Vérification d'images - {scope}"
     if country:
         task_description += f" ({country})"
+    if category:
+        task_description += f" ({category})"
+    if optimize_verification:
+        task_description += " [Optimisé]"
     if max_destinations:
         task_description += f" - max {max_destinations}"
     
@@ -268,7 +274,20 @@ def start_check_from_database():
                 result['name'] = dest['name']
                 result['country'] = dest['country']
                 
-                # Update database with check results
+                # Ajouter la catégorie détectée automatiquement
+                result['detected_category'] = detect_url_category(dest['url'])
+                result['scan_date'] = datetime.now().isoformat()
+                
+                # Ajouter les informations d'optimisation si présentes
+                if dest.get('is_optimized_sample'):
+                    result['optimization_tag'] = dest.get('optimization_tag')
+                    result['similar_urls_count'] = dest.get('similar_urls_count', 0)
+                    result['is_optimized_sample'] = True
+                
+                # Sauvegarder DIRECTEMENT en base - fini les fichiers JSON !
+                db.save_verification_result(result)
+                
+                # Update database with check results (garde la compatibilité)
                 db.update_destination_check_status(
                     dest['url'], 
                     result.get('has_placeholder', False),
@@ -303,6 +322,13 @@ def start_check_from_database():
         # Get destinations from database based on scope
         if scope == 'country':
             destinations = db.get_destinations_by_country(country)
+        elif scope == 'category':
+            # Get destinations by category (same logic as consolidator)
+            all_destinations = db.get_destinations_by_country(None)
+            destinations = []
+            for dest in all_destinations:
+                if is_destination_from_category(dest['url'], category):
+                    destinations.append(dest)
         elif scope == 'unverified':
             # Get destinations that haven't been checked
             destinations = [d for d in db.get_destinations_by_country() if not d['last_checked']]
@@ -312,30 +338,48 @@ def start_check_from_database():
         else:  # all
             destinations = db.get_destinations_by_country()
         
+        # Apply smart optimization if requested
+        original_count = len(destinations)
+        if optimize_verification:
+            destinations = optimize_destinations_by_location(destinations)
+            print(f"🧠 Optimisation: {original_count} URLs → {len(destinations)} URLs représentatives")
+        
         # Limit destinations if specified
         if max_destinations:
             destinations = destinations[:max_destinations]
         
         check_status['total'] = len(destinations)
+        check_status['original_total'] = original_count
         
         # Mettre à jour la tâche avec le total
         task_manager.update_task(task_id, total=len(destinations))
         
         print(f"📊 {len(destinations)} destinations à vérifier")
         
-        # Diviser en batches de 30
-        batch_size = 30
-        batches = [destinations[i:i + batch_size] for i in range(0, len(destinations), batch_size)]
+        # Rate limiting adaptatif - Commence avec des paramètres conservateurs
+        adaptive_config = {
+            'batch_size': 20,        # Commence petit
+            'max_workers': 5,        # Commence conservateur
+            'success_streak': 0,     # Compteur de succès consécutifs
+            'failure_count': 0,      # Compteur d'échecs
+            'max_batch_size': 100,   # Limite haute
+            'max_workers_limit': 50, # Limite haute workers
+            'retry_queue': []        # Queue des batchs à retry
+        }
+        
+        batches = [destinations[i:i + adaptive_config['batch_size']] 
+                  for i in range(0, len(destinations), adaptive_config['batch_size'])]
         processed_count = 0
         
-        print(f"🚀 Threading: {len(batches)} batches de {batch_size} destinations")
+        print(f"🧠 Threading adaptatif: {len(batches)} batches initiaux de {adaptive_config['batch_size']} destinations")
         
-        with ThreadPoolExecutor(max_workers=8) as executor:
+        # Démarrer avec le nombre de workers adaptatif
+        with ThreadPoolExecutor(max_workers=adaptive_config['max_workers']) as executor:
             for batch_num, batch in enumerate(batches):
                 if not check_status['is_running'] or not task_manager.is_task_running(task_id):
                     break
                 
-                check_status['current_url'] = f'Batch {batch_num + 1}/{len(batches)} - Threading 30 URLs...'
+                check_status['current_url'] = f'Batch {batch_num + 1}/{len(batches)} - {len(batch)} URLs (Workers: {adaptive_config["max_workers"]})'
                 task_manager.update_task(task_id, current_item=check_status['current_url'])
                 
                 # Soumettre le batch en parallèle
@@ -344,7 +388,10 @@ def start_check_from_database():
                     for dest in batch
                 }
                 
-                # Traiter les résultats au fur et à mesure
+                # Traiter les résultats au fur et à mesure avec monitoring
+                batch_errors = 0
+                batch_start_time = time.time()
+                
                 for future in as_completed(future_to_dest):
                     dest = future_to_dest[future]
                     processed_count += 1
@@ -361,14 +408,30 @@ def start_check_from_database():
                     try:
                         batch_results = future.result()
                         check_status['results'].extend(batch_results)
+                        adaptive_config['success_streak'] += 1
                         
                     except Exception as e:
                         print(f"❌ Erreur future {dest['url']}: {e}")
+                        batch_errors += 1
+                        adaptive_config['failure_count'] += 1
                     
                     check_status['progress'] = processed_count
                 
-                # Petite pause entre les batches pour éviter de surcharger
-                time.sleep(0.5)
+                # Adaptive rate monitoring
+                batch_duration = time.time() - batch_start_time
+                error_rate = batch_errors / len(batch) if len(batch) > 0 else 0
+                
+                # Ajuster la pause selon les performances
+                if error_rate > 0.2:  # > 20% d'erreurs
+                    pause_time = 2.0
+                    print(f"⚠️ Erreurs détectées ({error_rate:.1%}) - Pause augmentée à {pause_time}s")
+                elif adaptive_config['success_streak'] > 50:  # Beaucoup de succès
+                    pause_time = 0.2
+                    print(f"🚀 Performance excellente - Pause réduite à {pause_time}s")
+                else:
+                    pause_time = 0.5
+                
+                time.sleep(pause_time)
         
         check_status['is_running'] = False
         check_status['current_url'] = None
@@ -377,11 +440,17 @@ def start_check_from_database():
         task_manager.update_task(task_id, results=check_status['results'])
         task_manager.complete_task(task_id, success=True)
         
-        print(f"✅ Vérification terminée: {len(check_status['results'])} destinations vérifiées")
+        # Statistiques finales
+        total_success = adaptive_config['success_streak']
+        total_failures = adaptive_config['failure_count']
+        success_rate = total_success / (total_success + total_failures) * 100 if (total_success + total_failures) > 0 else 0
         
-        # Sauvegarder dans results_cache.json pour compatibilité
-        with open('results_cache.json', 'w') as f:
-            json.dump(check_status['results'], f, indent=2)
+        print(f"✅ Vérification terminée: {len(check_status['results'])} destinations vérifiées")
+        print(f"📊 Performance adaptative - Succès: {total_success}, Échecs: {total_failures} (Taux: {success_rate:.1f}%)")
+        print(f"⚙️ Configuration finale - Workers: {adaptive_config['max_workers']}, Batch: {adaptive_config['batch_size']}")
+        
+        # 🗃️ TOUT EST DÉJÀ EN BASE ! Plus besoin de fichiers JSON compliqués
+        print(f"🗃️ Tous les résultats sauvegardés en base SQLite - {len(check_status['results'])} nouveaux scans")
         
         # Sauvegarder avec timestamp dans historique
         save_scan_with_timestamp(check_status['results'])
@@ -394,6 +463,63 @@ def start_check_from_database():
         'scope': scope,
         'task_id': task_id
     })
+
+@app.route('/api/verification-simulation', methods=['POST'])
+@login_required
+def simulate_verification():
+    """Simule une vérification pour calculer le nombre d'URLs et l'optimisation"""
+    try:
+        data = request.get_json()
+        scope = data.get('scope', 'all')
+        country = data.get('country')
+        category = data.get('category')
+        max_destinations = data.get('max_destinations')
+        
+        # Get destinations using same logic as verification
+        if scope == 'country':
+            destinations = db.get_destinations_by_country(country)
+        elif scope == 'category':
+            all_destinations = db.get_destinations_by_country(None)
+            destinations = []
+            for dest in all_destinations:
+                if is_destination_from_category(dest['url'], category):
+                    destinations.append(dest)
+        elif scope == 'unverified':
+            destinations = [d for d in db.get_destinations_by_country() if not d['last_checked']]
+        elif scope == 'placeholder':
+            destinations = [d for d in db.get_destinations_by_country() if d['has_placeholder']]
+        else:  # all
+            destinations = db.get_destinations_by_country()
+        
+        base_count = len(destinations)
+        
+        # Apply optimization simulation
+        optimized_destinations = optimize_destinations_by_location(destinations)
+        optimized_count = len(optimized_destinations)
+        
+        # Apply max limit if specified
+        if max_destinations:
+            final_count = min(optimized_count, max_destinations)
+        else:
+            final_count = optimized_count
+        
+        # Calculate savings
+        savings_percent = int((base_count - optimized_count) / base_count * 100) if base_count > 0 else 0
+        
+        # Estimate time (assuming ~3 seconds per verification)
+        estimated_time_minutes = max(1, int(final_count * 3 / 60))
+        
+        return jsonify({
+            'success': True,
+            'base_count': base_count,
+            'optimized_count': optimized_count,
+            'final_count': final_count,
+            'savings_percent': savings_percent,
+            'estimated_time_minutes': estimated_time_minutes
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/api/crawl-and-check', methods=['POST'])
 @login_required
@@ -451,70 +577,103 @@ def get_status():
 @app.route('/api/results')
 @login_required
 def get_results():
-    if os.path.exists('results_cache.json'):
-        with open('results_cache.json', 'r') as f:
-            cached_results = json.load(f)
-        return jsonify({'results': cached_results})
-    return jsonify({'results': check_status['results']})
+    """Récupère tous les résultats de vérification depuis la base de données"""
+    # Compter le total de destinations disponibles dans la base
+    total_destinations_available = len(db.get_destinations_by_country(None))
+    
+    # Récupérer tous les résultats depuis la base de données
+    db_results = db.get_all_verification_results()
+    
+    # Migration une seule fois: importer les anciens résultats JSON en base s'ils existent
+    if os.path.exists('results_cache.json') and len(db_results) == 0:
+        try:
+            with open('results_cache.json', 'r') as f:
+                legacy_results = json.load(f)
+            
+            print(f"🔄 Migration des {len(legacy_results)} résultats JSON vers la base de données...")
+            
+            for result in legacy_results:
+                # Ajouter des informations manquantes pour la compatibilité
+                if 'detected_category' not in result and 'url' in result:
+                    result['detected_category'] = detect_url_category(result['url'])
+                
+                # Marquer comme scan historique
+                if 'scan_date' not in result:
+                    result['scan_date'] = datetime.now().isoformat()
+                    result['is_legacy_scan'] = True
+                
+                # Sauvegarder en base
+                db.save_verification_result(result)
+            
+            # Renommer le fichier JSON pour éviter la re-migration
+            os.rename('results_cache.json', 'results_cache_migrated.json')
+            print(f"✅ Migration terminée, fichier renommé en results_cache_migrated.json")
+            
+            # Récupérer les résultats maintenant en base
+            db_results = db.get_all_verification_results()
+            
+        except Exception as e:
+            print(f"❌ Erreur lors de la migration: {e}")
+    
+    return jsonify({
+        'results': db_results,
+        'total_available': total_destinations_available,
+        'total_checked': len(db_results)
+    })
 
 @app.route('/api/historique/data')
 @login_required
 def get_historique_data():
-    """Retourne les données historiques avec statistiques"""
-    try:
-        with open('results_cache.json', 'r', encoding='utf-8') as f:
-            results = json.load(f)
-        
-        # Calculer les statistiques
-        total = len(results)
-        success = len([r for r in results if r['status'] == 'success'])
-        warning = len([r for r in results if r['status'] == 'warning'])
-        error = len([r for r in results if r['status'] == 'error'])
-        with_images = len([r for r in results if r['images_found'] > 0])
-        placeholders = len([r for r in results if r['has_placeholder']])
-        
-        # Grouper par pays/domaine
-        countries = {}
-        for result in results:
-            domain = result['url'].split('/')[2] if '/' in result['url'] else 'unknown'
+    """Retourne les données historiques depuis la base de données avec statistiques"""
+    # Récupérer tous les résultats depuis la base de données
+    results = db.get_all_verification_results()
+    
+    # Calculer les statistiques
+    total = len(results)
+    success = len([r for r in results if r.get('status') == 'success'])
+    warning = len([r for r in results if r.get('status') == 'warning'])
+    error = len([r for r in results if r.get('status') == 'error'])
+    with_images = len([r for r in results if r.get('images_found', 0) > 0])
+    placeholders = len([r for r in results if r.get('has_placeholder', False)])
+    
+    # Grouper par pays/domaine depuis les données en base
+    countries = {}
+    for result in results:
+        # Utiliser le pays détecté ou extraire du domaine
+        country_key = result.get('country', 'unknown')
+        if not country_key or country_key == 'unknown':
+            domain = result.get('url', '').split('/')[2] if '/' in result.get('url', '') else 'unknown'
             country_key = domain.split('.')[-2] if '.' in domain else domain
-            
-            if country_key not in countries:
-                countries[country_key] = {
-                    'name': country_key,
-                    'total': 0,
-                    'success': 0,
-                    'warning': 0,
-                    'error': 0,
-                    'images_total': 0
-                }
-            
-            countries[country_key]['total'] += 1
-            countries[country_key][result['status']] += 1
-            countries[country_key]['images_total'] += result['images_found']
         
-        return jsonify({
-            'results': results,
-            'statistics': {
-                'total': total,
-                'success': success,
-                'warning': warning,
-                'error': error,
-                'with_images': with_images,
-                'placeholders': placeholders,
-                'success_rate': round((success / total * 100) if total > 0 else 0, 1)
-            },
-            'countries': list(countries.values())
-        })
-    except FileNotFoundError:
-        return jsonify({
-            'results': [],
-            'statistics': {
-                'total': 0, 'success': 0, 'warning': 0, 'error': 0,
-                'with_images': 0, 'placeholders': 0, 'success_rate': 0
-            },
-            'countries': []
-        })
+        if country_key not in countries:
+            countries[country_key] = {
+                'name': country_key,
+                'total': 0,
+                'success': 0,
+                'warning': 0,
+                'error': 0,
+                'images_total': 0
+            }
+        
+        countries[country_key]['total'] += 1
+        status = result.get('status', 'unknown')
+        if status in countries[country_key]:
+            countries[country_key][status] += 1
+        countries[country_key]['images_total'] += result.get('images_found', 0)
+    
+    return jsonify({
+        'results': results,
+        'statistics': {
+            'total': total,
+            'success': success,
+            'warning': warning,
+            'error': error,
+            'with_images': with_images,
+            'placeholders': placeholders,
+            'success_rate': round((success / total * 100) if total > 0 else 0, 1)
+        },
+        'countries': list(countries.values())
+    })
 
 @app.route('/api/historique/scans')
 @login_required
@@ -841,14 +1000,31 @@ def get_countries():
     return jsonify(countries)
 
 @app.route('/api/consolidator/destinations')
+@login_required
+def get_all_destinations():
+    # Récupérer toutes les entrées (maintenant ce sont des typologies GZ, pas des destinations classiques)
+    destinations = db.get_destinations_by_country(None)
+    print(f"API: Returning {len(destinations)} entries (all)")
+    if len(destinations) > 0:
+        print(f"First entry sample: {destinations[0]}")
+    return jsonify({
+        'success': True,
+        'destinations': destinations,
+        'count': len(destinations)
+    })
+
 @app.route('/api/consolidator/destinations/<country>')
 @login_required
-def get_destinations(country=None):
+def get_destinations_by_country(country):
     destinations = db.get_destinations_by_country(country)
     print(f"API: Returning {len(destinations)} destinations for country: {country}")
     if len(destinations) > 0:
         print(f"First destination sample: {destinations[0]}")
-    return jsonify(destinations)
+    return jsonify({
+        'success': True,
+        'destinations': destinations,
+        'count': len(destinations)
+    })
 
 @app.route('/api/consolidator/destinations', methods=['POST'])
 @login_required
@@ -904,6 +1080,10 @@ def start_full_scraping():
     if scraping_status['is_running']:
         return jsonify({'success': False, 'error': 'Un scraping est déjà en cours'})
     
+    # Get selected categories from request
+    data = request.get_json() or {}
+    selected_categories = data.get('categories', None)
+    
     def progress_callback(percent, status):
         global scraping_status
         scraping_status['progress_percent'] = percent
@@ -921,7 +1101,12 @@ def start_full_scraping():
         try:
             # Créer un scraper avec callback
             progress_scraper = PVCatalogScraper(progress_callback=progress_callback)
-            destinations = progress_scraper.scrape_full_catalog()
+            
+            # Use the new method with selected categories if provided
+            if selected_categories:
+                destinations = progress_scraper.scrape_full_catalog_selective(selected_categories)
+            else:
+                destinations = progress_scraper.scrape_full_catalog()
             
             scraping_status['destinations_found'] = len(destinations)
             scraping_status['progress_percent'] = 100
@@ -940,6 +1125,166 @@ def start_full_scraping():
     thread.start()
     
     return jsonify({'success': True})
+
+@app.route('/api/consolidator/sitemap-counts')
+@login_required
+def get_sitemap_counts():
+    """Récupère le nombre d'entrées dans chaque fichier sitemap"""
+    try:
+        scraper = PVCatalogScraper()
+        counts = scraper.get_sitemap_entry_counts()
+        return jsonify({'success': True, 'counts': counts})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/consolidator/destinations/category/<category>')
+@login_required
+def get_destinations_by_category(category):
+    """Récupère les destinations par catégorie GZ"""
+    try:
+        db = DestinationDB()
+        # Récupérer toutes les entrées de la table (ce sont maintenant des typologies GZ)
+        destinations = db.get_destinations_by_country(None)
+        
+        # Filtrer par catégorie basé sur l'URL ou les patterns
+        if category != 'all':
+            filtered_destinations = []
+            for dest in destinations:
+                if is_destination_from_category(dest['url'], category):
+                    filtered_destinations.append(dest)
+            destinations = filtered_destinations
+        
+        return jsonify({
+            'success': True, 
+            'destinations': destinations,
+            'count': len(destinations)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+def optimize_destinations_by_location(destinations):
+    """Optimise la liste en ne gardant qu'une URL représentative par destination géographique"""
+    import re
+    from collections import defaultdict
+    
+    # Grouper les destinations par nom géographique
+    location_groups = defaultdict(list)
+    
+    for dest in destinations:
+        # Extraire le nom de la destination depuis l'URL
+        location_name = extract_location_from_url(dest['url'])
+        location_groups[location_name].append(dest)
+    
+    optimized_destinations = []
+    skipped_groups = []
+    
+    for location, group in location_groups.items():
+        if len(group) == 1:
+            # Une seule URL pour cette destination, on la garde
+            optimized_destinations.extend(group)
+        else:
+            # Plusieurs URLs pour cette destination, on ne garde que la première (française de préférence)
+            # Priorité: fr-fr > autres langues
+            group_sorted = sorted(group, key=lambda x: (
+                0 if '/fr-fr/' in x['url'] else 1,  # Français en premier
+                len(x['url'])  # URL la plus courte ensuite
+            ))
+            
+            representative = group_sorted[0]
+            # Marquer comme groupe optimisé avec tag spécial
+            representative['optimization_tag'] = f"🔍 Groupe '{location}' ({len(group)} URLs similaires)"
+            representative['similar_urls_count'] = len(group) - 1
+            representative['is_optimized_sample'] = True
+            
+            optimized_destinations.append(representative)
+            skipped_groups.append({
+                'location': location,
+                'count': len(group),
+                'representative_url': representative['url']
+            })
+    
+    print(f"📍 {len(location_groups)} destinations uniques détectées")
+    print(f"⚡ {len(skipped_groups)} groupes optimisés (1 URL testée par groupe)")
+    
+    return optimized_destinations
+
+def detect_url_category(url):
+    """Détecte la catégorie d'une URL pour l'affichage des tags colorés"""
+    url_lower = url.lower()
+    
+    # Mapping des patterns vers les catégories d'affichage
+    if '/co_' in url_lower:
+        return 'Pays'
+    elif '/zt_' in url_lower:
+        return 'Zone Touristique'
+    elif '/ge_' in url_lower:
+        return 'Région'
+    elif '/de_' in url_lower:
+        return 'Destination'
+    elif '/fp_' in url_lower:
+        return 'Fiche Produit'
+    elif '/avis' in url_lower or '/review' in url_lower:
+        return 'Avis'
+    elif '/blog' in url_lower or '/article' in url_lower:
+        return 'Blog'
+    else:
+        return 'Autre'
+
+def extract_location_from_url(url):
+    """Extrait le nom de la destination depuis une URL Pierre & Vacances"""
+    import re
+    
+    # Patterns pour différents types d'URLs
+    patterns = [
+        r'/de_[^/]*?-([^/]+?)(?:-[^/]*)?/?(?:\?|$)',  # /de_location-sainte-anne
+        r'/fp_[A-Z0-9]+_[^/]*?-([^/]+?)(?:-[^/]*)?/?(?:\?|$)',  # /fp_XXX_location-sainte-anne
+        r'/co_[^/]*?-([^/]+?)/?(?:\?|$)',  # /co_location-france
+        r'/zt_[^/]*?-([^/]+?)/?(?:\?|$)',  # /zt_costa-brava
+        r'/ge_[^/]*?-([^/]+?)/?(?:\?|$)',  # /ge_region-alsace
+    ]
+    
+    for pattern in patterns:
+        match = re.search(pattern, url, re.IGNORECASE)
+        if match:
+            location = match.group(1)
+            # Nettoyer le nom (enlever les suffixes techniques)
+            location = re.sub(r'-(last-minute|vacances|location|sejour|weekend)$', '', location)
+            return location.lower()
+    
+    # Si aucun pattern ne matche, utiliser le dernier segment de l'URL
+    segments = url.rstrip('/').split('/')
+    if segments:
+        return segments[-1].lower()
+    
+    return 'unknown'
+
+def is_destination_from_category(url, category):
+    """Détermine si une URL appartient à une catégorie spécifique"""
+    url_lower = url.lower()
+    
+    # Patterns basés sur la structure réelle des URLs Pierre & Vacances
+    category_patterns = {
+        'country': ['/co_'],  # Pages pays: /co_location-france
+        'region': ['/ge_', '/zt_'],  # Géographique + Zone touristique  
+        'destination': ['/de_'],  # Pages destinations: /de_location-houlgate
+        'zone-touristique': ['/zt_'],  # Zone touristique uniquement
+        'fiche-produit': ['/fp_'],  # Fiches produit: /fp_CWL_location-residence
+        'avis-fiche-produit': ['/avis'],  # Pages d'avis
+        'blog': ['/blog', '/article'],  # Articles de blog
+        'autre-page': []  # Catch-all pour les autres pages
+    }
+    
+    if category in category_patterns:
+        patterns = category_patterns[category]
+        if patterns:  # Si il y a des patterns à chercher
+            return any(pattern in url_lower for pattern in patterns)
+        else:  # Pour 'autre-page', prendre ceux qui ne matchent aucun pattern
+            all_patterns = []
+            for cat_patterns in category_patterns.values():
+                all_patterns.extend(cat_patterns)
+            return not any(pattern in url_lower for pattern in all_patterns if pattern)
+    
+    return False
 
 @app.route('/api/consolidator/scraping-status')
 @login_required
@@ -1654,6 +1999,63 @@ def extract_batch():
         'urls_count': len(urls),
         'extraction_types': extraction_types
     })
+
+# Endpoints pour la gestion des URLs manquantes et statistiques historiques
+@app.route('/api/verification/populate-missing', methods=['POST'])
+@login_required
+def populate_missing_urls():
+    """Peuple la table verification_results avec toutes les URLs manquantes"""
+    try:
+        populated_count = db.populate_missing_verification_urls()
+        return jsonify({
+            'success': True,
+            'populated_count': populated_count,
+            'message': f'{populated_count} URLs manquantes ajoutées en base avec statut "pending"'
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/verification/stats')
+@login_required
+def get_verification_stats():
+    """Récupère les statistiques détaillées sur les vérifications"""
+    try:
+        stats = db.get_verification_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/verification/unverified')
+@login_required
+def get_unverified_destinations():
+    """Récupère toutes les destinations jamais vérifiées"""
+    try:
+        unverified = db.get_unverified_destinations()
+        return jsonify({
+            'success': True,
+            'unverified': unverified,
+            'count': len(unverified)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/api/verification/history/<path:url>')
+@login_required
+def get_url_verification_history(url):
+    """Récupère l'historique complet des vérifications pour une URL"""
+    try:
+        history = db.get_verification_history_for_url(url)
+        return jsonify({
+            'success': True,
+            'url': url,
+            'history': history,
+            'count': len(history)
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
     app.run(debug=True)

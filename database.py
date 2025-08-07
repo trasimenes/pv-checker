@@ -94,6 +94,30 @@ class DestinationDB:
                 )
             ''')
             
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS verification_results (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    url TEXT NOT NULL,
+                    title TEXT,
+                    name TEXT,
+                    country TEXT,
+                    detected_category TEXT,
+                    status TEXT NOT NULL,
+                    has_placeholder BOOLEAN DEFAULT 0,
+                    placeholder_count INTEGER DEFAULT 0,  
+                    images_found INTEGER DEFAULT 0,
+                    images_data TEXT,  -- JSON des images
+                    scan_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    optimization_tag TEXT,
+                    similar_urls_count INTEGER DEFAULT 0,
+                    is_optimized_sample BOOLEAN DEFAULT 0,
+                    error_message TEXT,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(url, scan_date) -- Permet plusieurs scans pour la même URL
+                )
+            ''')
+            
             # Ajouter la colonne category si elle n'existe pas (migration)
             cursor.execute("PRAGMA table_info(destinations)")
             columns = [column[1] for column in cursor.fetchall()]
@@ -219,6 +243,194 @@ class DestinationDB:
             
             columns = [desc[0] for desc in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+    def save_verification_result(self, result):
+        """Sauvegarde un résultat de vérification en base"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            
+            # Extraire les données images en JSON
+            images_json = json.dumps(result.get('images', [])) if result.get('images') else None
+            
+            cursor.execute('''
+                INSERT OR REPLACE INTO verification_results (
+                    url, title, name, country, detected_category, status,
+                    has_placeholder, placeholder_count, images_found, images_data,
+                    scan_date, optimization_tag, similar_urls_count, 
+                    is_optimized_sample, error_message
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                result.get('url'),
+                result.get('title'),
+                result.get('name'),
+                result.get('country'),
+                result.get('detected_category'),
+                result.get('status'),
+                result.get('has_placeholder', False),
+                result.get('placeholder_count', 0),
+                result.get('images_found', 0),
+                images_json,
+                result.get('scan_date'),
+                result.get('optimization_tag'),
+                result.get('similar_urls_count', 0),
+                result.get('is_optimized_sample', False),
+                result.get('error')
+            ))
+            
+            return cursor.lastrowid
+    
+    def get_all_verification_results(self):
+        """Récupère tous les résultats de vérification avec le dernier scan par URL"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT vr.* FROM verification_results vr
+                INNER JOIN (
+                    SELECT url, MAX(scan_date) as latest_scan
+                    FROM verification_results
+                    GROUP BY url
+                ) latest ON vr.url = latest.url AND vr.scan_date = latest.latest_scan
+                ORDER BY vr.scan_date DESC
+            ''')
+            
+            columns = [desc[0] for desc in cursor.description]
+            results = []
+            
+            for row in cursor.fetchall():
+                result = dict(zip(columns, row))
+                
+                # Reconstituer les images depuis JSON
+                if result.get('images_data'):
+                    try:
+                        result['images'] = json.loads(result['images_data'])
+                    except:
+                        result['images'] = []
+                
+                results.append(result)
+            
+            return results
+    
+    def get_verification_history_for_url(self, url):
+        """Récupère l'historique complet des vérifications pour une URL"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT * FROM verification_results 
+                WHERE url = ? 
+                ORDER BY scan_date DESC
+            ''', (url,))
+            
+            columns = [desc[0] for desc in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+    def get_unverified_destinations(self):
+        """Récupère toutes les destinations qui n'ont jamais été vérifiées"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT d.* FROM destinations d
+                LEFT JOIN verification_results vr ON d.url = vr.url
+                WHERE vr.url IS NULL
+                ORDER BY d.country, d.name
+            ''')
+            
+            columns = [desc[0] for desc in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]
+    
+    def populate_missing_verification_urls(self):
+        """Peuple la table verification_results avec toutes les URLs manquantes depuis destinations"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            
+            # Récupérer toutes les destinations non vérifiées
+            unverified = self.get_unverified_destinations()
+            
+            populated_count = 0
+            for dest in unverified:
+                # Créer un résultat de vérification "en attente" pour chaque URL manquante
+                cursor.execute('''
+                    INSERT OR IGNORE INTO verification_results (
+                        url, title, name, country, detected_category, status,
+                        has_placeholder, placeholder_count, images_found,
+                        scan_date, optimization_tag, is_optimized_sample
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    dest['url'],
+                    dest['name'],  # Utiliser le nom comme titre temporaire
+                    dest['name'],
+                    dest['country'],
+                    dest.get('category', 'destination'),
+                    'pending',  # Statut en attente de vérification
+                    False,      # has_placeholder
+                    0,          # placeholder_count
+                    0,          # images_found
+                    datetime.now().isoformat(),
+                    'auto_populated',  # Tag pour identifier les URLs auto-peuplées
+                    False       # is_optimized_sample
+                ))
+                populated_count += 1
+            
+            conn.commit()
+            return populated_count
+    
+    def get_verification_stats(self):
+        """Statistiques détaillées sur les vérifications"""
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.cursor()
+            
+            # Stats générales
+            cursor.execute('SELECT COUNT(*) FROM verification_results')
+            total_verifications = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(DISTINCT url) FROM verification_results')
+            unique_urls = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(*) FROM verification_results WHERE status = "pending"')
+            pending = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(*) FROM verification_results WHERE status = "success"')
+            success = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(*) FROM verification_results WHERE status = "warning"')
+            warning = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(*) FROM verification_results WHERE status = "error"')
+            error = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT COUNT(*) FROM verification_results WHERE has_placeholder = 1')
+            with_placeholders = cursor.fetchone()[0]
+            
+            # Stats par catégorie
+            cursor.execute('''
+                SELECT detected_category, COUNT(*) as count
+                FROM verification_results
+                GROUP BY detected_category
+                ORDER BY count DESC
+            ''')
+            by_category = dict(cursor.fetchall())
+            
+            # Stats par pays
+            cursor.execute('''
+                SELECT country, COUNT(*) as count
+                FROM verification_results
+                WHERE country IS NOT NULL AND country != ''
+                GROUP BY country
+                ORDER BY count DESC
+            ''')
+            by_country = dict(cursor.fetchall())
+            
+            return {
+                'total_verifications': total_verifications,
+                'unique_urls': unique_urls,
+                'pending': pending,
+                'success': success,
+                'warning': warning,
+                'error': error,
+                'with_placeholders': with_placeholders,
+                'success_rate': round((success / unique_urls * 100) if unique_urls > 0 else 0, 1),
+                'by_category': by_category,
+                'by_country': by_country
+            }
     
     def get_all_countries(self):
         with sqlite3.connect(self.db_path) as conn:

@@ -92,7 +92,7 @@
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <span class="fw-semibold d-block mb-1">Total Destinations</span>
+            <span class="fw-semibold d-block mb-1">Total Disponibles</span>
             <h3 class="card-title mb-2" id="total-destinations">0</h3>
           </div>
           <div class="avatar flex-shrink-0">
@@ -205,17 +205,63 @@
 
 
         <div class="mb-3">
-          <label class="form-label">Destinations à vérifier</label>
+          <label class="form-label">Données à vérifier</label>
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="optimize-verification" checked>
+            <label class="form-check-label" for="optimize-verification">
+              <strong>Optimisation intelligente</strong> - Vérifier une seule fois par destination
+              <small class="text-muted d-block">Groupe les URLs similaires (ex: toutes les variantes de "Saint-Anne") et ne teste qu'un échantillon représentatif</small>
+            </label>
+          </div>
+          
+          <!-- Simulateur de vérification -->
+          <div class="card mt-3 bg-light" id="verification-simulator">
+            <div class="card-body p-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <h6 class="mb-1">📊 Simulation de vérification</h6>
+                  <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted" id="simulation-base">
+                      <i class="bx bx-loader-alt"></i> Calcul en cours...
+                    </span>
+                    <span class="text-success fw-bold" id="simulation-optimized" style="display: none;">
+                      → <i class="bx bx-zap"></i> <span id="optimized-count">0</span> vérifications
+                    </span>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <div class="badge bg-success" id="simulation-savings" style="display: none;">
+                    <i class="bx bx-trending-down"></i> -<span id="savings-percent">0</span>%
+                  </div>
+                  <div class="text-muted small" id="simulation-time" style="display: none;">
+                    Temps estimé: <span id="estimated-time">0 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-md-6">
               <select class="form-select" id="verification-scope">
-                <option value="all">Toutes les destinations</option>
+                <option value="all">Toutes les données (13638)</option>
+                <option value="category">Par catégorie GZ sélectionnée</option>
                 <option value="country">Par pays spécifique</option>
                 <option value="unverified">Non vérifiées uniquement</option>
                 <option value="placeholder">Avec placeholders uniquement</option>
               </select>
             </div>
             <div class="col-md-6">
+              <select class="form-select" id="category-filter" style="display: none;">
+                <option value="">Sélectionner une catégorie</option>
+                <option value="country">Pays</option>
+                <option value="region">Régions</option>
+                <option value="destination">Destinations</option>
+                <option value="zone-touristique">Zones Touristiques</option>
+                <option value="fiche-produit">Fiches Produits</option>
+                <option value="avis-fiche-produit">Avis</option>
+                <option value="blog">Blog</option>
+                <option value="autre-page">Autres Pages</option>
+              </select>
               <select class="form-select" id="country-filter" style="display: none;">
                 <option value="">Sélectionner un pays</option>
                 <option value="FR">France</option>
@@ -350,11 +396,17 @@ function startCrawl() {
     
     const scope = document.getElementById('verification-scope').value;
     const country = document.getElementById('country-filter').value;
+    const category = document.getElementById('category-filter').value;
     const maxDestinations = document.getElementById('max-destinations').value;
+    const optimizeVerification = document.getElementById('optimize-verification').checked;
     
     // Validation
     if (scope === 'country' && !country) {
         alert('Veuillez sélectionner un pays');
+        return;
+    }
+    if (scope === 'category' && !category) {
+        alert('Veuillez sélectionner une catégorie');
         return;
     }
     
@@ -367,7 +419,9 @@ function startCrawl() {
     const requestData = {
         scope: scope,
         country: country,
-        max_destinations: maxDestinations ? parseInt(maxDestinations) : null
+        category: category,
+        max_destinations: maxDestinations ? parseInt(maxDestinations) : null,
+        optimize_verification: optimizeVerification
     };
     
     fetch('/api/check-from-database', {
@@ -395,18 +449,45 @@ function startCrawl() {
     });
 }
 
-// Show/hide country filter based on scope selection
+// Show/hide filters based on scope selection
 document.addEventListener('DOMContentLoaded', function() {
     const scopeSelect = document.getElementById('verification-scope');
     const countryFilter = document.getElementById('country-filter');
+    const categoryFilter = document.getElementById('category-filter');
     
     scopeSelect.addEventListener('change', function() {
+        // Hide all filters first
+        countryFilter.style.display = 'none';
+        categoryFilter.style.display = 'none';
+        
+        // Show appropriate filter
         if (this.value === 'country') {
             countryFilter.style.display = 'block';
-        } else {
-            countryFilter.style.display = 'none';
+        } else if (this.value === 'category') {
+            categoryFilter.style.display = 'block';
         }
     });
+    
+    // Check URL parameters for consolidator sync
+    const urlParams = new URLSearchParams(window.location.search);
+    const fromConsolidator = urlParams.get('from');
+    const category = urlParams.get('category');
+    const count = urlParams.get('count');
+    
+    if (fromConsolidator === 'consolidator' && category) {
+        // Pre-fill from consolidator selection
+        scopeSelect.value = 'category';
+        categoryFilter.style.display = 'block';
+        categoryFilter.value = category;
+        
+        // Update label with count if provided
+        if (count) {
+            const option = categoryFilter.querySelector(`option[value="${category}"]`);
+            if (option) {
+                option.textContent += ` (${count})`;
+            }
+        }
+    }
     
     // Initial load of existing results
     fetch('/api/results')
@@ -414,9 +495,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.results && data.results.length > 0) {
                 updateResults(data.results);
-                updateStats({results: data.results, total: data.results.length, progress: data.results.length});
+                updateStats({
+                    results: data.results, 
+                    total: data.total_available || data.results.length, 
+                    progress: data.total_checked || data.results.length
+                });
             }
         });
+    
+    // Setup simulation triggers
+    setupVerificationSimulator();
 });
 
 function stopCrawl() {
@@ -616,6 +704,29 @@ function displayPage(page) {
         const placeholderBadge = result.has_placeholder ? 
             '<span class="badge bg-label-danger ms-1"><i class="bx bx-image"></i></span>' : '';
         
+        // Badge de catégorie coloré
+        const categoryColors = {
+            'Pays': 'bg-primary',
+            'Région': 'bg-info', 
+            'Zone Touristique': 'bg-success',
+            'Destination': 'bg-warning',
+            'Fiche Produit': 'bg-secondary',
+            'Avis': 'bg-dark',
+            'Blog': 'bg-danger',
+            'Autre': 'bg-light text-dark'
+        };
+        
+        const categoryBadge = result.detected_category ? 
+            `<span class="badge ${categoryColors[result.detected_category] || 'bg-light text-dark'} ms-1">${result.detected_category}</span>` : '';
+        
+        // Date de scan
+        let scanDate = '';
+        if (result.scan_date) {
+            scanDate = `<small class="text-muted d-block"><i class="bx bx-calendar"></i> Scanné le ${new Date(result.scan_date).toLocaleDateString('fr-FR')}</small>`;
+        } else if (result.is_legacy_scan) {
+            scanDate = `<small class="text-info d-block"><i class="bx bx-history"></i> Analyse historique conservée</small>`;
+        }
+        
         // Préparer l'imagette (mini-galerie si plusieurs images)
         let thumbnail = '';
         if (result.images && result.images.length > 0) {
@@ -705,6 +816,16 @@ function displayPage(page) {
             <td>
                 <strong>${result.title || result.name || 'Sans titre'}</strong>
                 ${placeholderBadge}
+                ${categoryBadge}
+                ${result.is_optimized_sample ? 
+                    `<br><small class="text-info"><i class="bx bx-group"></i> ${result.optimization_tag}</small>` : 
+                    ''}
+                ${scanDate}
+                ${result.last_checked && !result.scan_date ? 
+                    `<small class="text-muted d-block"><i class="bx bx-time"></i> Vérifié le ${new Date(result.last_checked).toLocaleDateString('fr-FR')}</small>` : 
+                    ''}
+                ${!result.last_checked && !result.scan_date ? 
+                    '<small class="text-warning d-block"><i class="bx bx-clock"></i> Jamais vérifié</small>' : ''}
             </td>
             <td class="text-truncate" style="max-width: 250px;">
                 <a href="${result.url}" target="_blank" class="text-decoration-none" title="${result.url}">
@@ -920,6 +1041,89 @@ function showImageDetails(index) {
     
     modalContent.innerHTML = content;
     new bootstrap.Modal(modal).show();
+}
+
+function setupVerificationSimulator() {
+    const scopeSelect = document.getElementById('verification-scope');
+    const categoryFilter = document.getElementById('category-filter');
+    const countryFilter = document.getElementById('country-filter');
+    const maxDestinationsInput = document.getElementById('max-destinations');
+    const optimizeCheckbox = document.getElementById('optimize-verification');
+    
+    // Trigger simulation on any change
+    [scopeSelect, categoryFilter, countryFilter, maxDestinationsInput, optimizeCheckbox].forEach(element => {
+        element.addEventListener('change', updateVerificationSimulation);
+        element.addEventListener('input', updateVerificationSimulation);
+    });
+    
+    // Initial simulation
+    updateVerificationSimulation();
+}
+
+function updateVerificationSimulation() {
+    const scope = document.getElementById('verification-scope').value;
+    const category = document.getElementById('category-filter').value;
+    const country = document.getElementById('country-filter').value;
+    const maxDestinations = document.getElementById('max-destinations').value;
+    const optimizeEnabled = document.getElementById('optimize-verification').checked;
+    
+    // Show loading
+    document.getElementById('simulation-base').innerHTML = '<i class="bx bx-loader-alt"></i> Calcul en cours...';
+    document.getElementById('simulation-optimized').style.display = 'none';
+    document.getElementById('simulation-savings').style.display = 'none';
+    document.getElementById('simulation-time').style.display = 'none';
+    
+    // Build simulation request
+    const requestData = {
+        scope: scope,
+        category: category,
+        country: country,
+        max_destinations: maxDestinations ? parseInt(maxDestinations) : null,
+        simulate: true
+    };
+    
+    fetch('/api/verification-simulation', {
+        method: 'POST',  
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const baseCount = data.base_count;
+            const optimizedCount = data.optimized_count;
+            const savingsPercent = data.savings_percent;
+            const estimatedTimeMin = data.estimated_time_minutes;
+            
+            // Update base count
+            document.getElementById('simulation-base').innerHTML = 
+                `<i class="bx bx-list-ul"></i> ${baseCount.toLocaleString()} URLs détectées`;
+            
+            if (optimizeEnabled && optimizedCount < baseCount) {
+                // Show optimization
+                document.getElementById('optimized-count').textContent = optimizedCount.toLocaleString();
+                document.getElementById('simulation-optimized').style.display = 'inline';
+                
+                document.getElementById('savings-percent').textContent = savingsPercent;
+                document.getElementById('simulation-savings').style.display = 'inline-block';
+                
+                document.getElementById('estimated-time').textContent = estimatedTimeMin + ' min';
+                document.getElementById('simulation-time').style.display = 'block';
+            } else {
+                // No optimization or same count
+                document.getElementById('simulation-optimized').style.display = 'none';
+                document.getElementById('simulation-savings').style.display = 'none';
+                
+                document.getElementById('estimated-time').textContent = estimatedTimeMin + ' min';
+                document.getElementById('simulation-time').style.display = 'block';
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Simulation error:', error);
+        document.getElementById('simulation-base').innerHTML = 
+            '<i class="bx bx-error-circle text-danger"></i> Erreur de simulation';
+    });
 }
 
 // Remove the duplicate DOMContentLoaded listener at the end

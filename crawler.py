@@ -8,7 +8,7 @@ import re
 import random
 
 class ImageChecker:
-    def __init__(self):
+    def __init__(self, identity_id=0):
         # Configuration avancée de StealthSession pour être indétectable
         self.session = StealthSession(
             timeout=30,

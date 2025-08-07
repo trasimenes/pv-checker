@@ -229,6 +229,161 @@ class PVCatalogScraper:
             print(f"❌ {error_msg}")
             raise e
     
+    def scrape_full_catalog_selective(self, selected_categories):
+        """Scrape sélectif du catalogue P&V selon les catégories GZ choisies"""
+        print(f"🚀 Démarrage du scraping sélectif pour {len(selected_categories)} catégories GZ...")
+        
+        all_destinations = []
+        session_id = self._start_scraping_session()
+        
+        try:
+            # Variables de tracking pour la progression globale
+            self.current_progress = 0
+            self.current_status = ""
+            
+            if self.progress_callback:
+                self.progress_callback(5, f"Scraping de {len(selected_categories)} fichiers GZ...")
+            
+            # Scraper uniquement les sitemaps sélectionnés
+            destinations_from_gz = self._scrape_selected_gz_files(selected_categories)
+            all_destinations.extend(destinations_from_gz)
+            
+            # Dédoublonnage
+            if self.progress_callback:
+                self.progress_callback(85, "Dédoublonnage des destinations...")
+            unique_destinations = self._deduplicate_destinations(all_destinations)
+            
+            # Sauvegarde en base avec marquage de la source
+            if self.progress_callback:
+                self.progress_callback(90, "Sauvegarde en base de données...")
+            total_saved = self._save_destinations_with_source(unique_destinations, selected_categories)
+            
+            # Enregistrer la session
+            self._end_scraping_session(session_id, len(unique_destinations), total_saved)
+            
+            if self.progress_callback:
+                self.progress_callback(100, f"Terminé - {total_saved} destinations consolidées depuis {len(selected_categories)} fichiers GZ")
+            
+            return unique_destinations
+            
+        except Exception as e:
+            error_msg = f"Erreur: {str(e)}"
+            self._end_scraping_session(session_id, 0, 0, error_msg)
+            if self.progress_callback:
+                self.progress_callback(100, error_msg)
+            print(f"❌ {error_msg}")
+            raise e
+    
+    def _scrape_selected_gz_files(self, selected_categories):
+        """Scrape uniquement les fichiers GZ sélectionnés"""
+        destinations = []
+        
+        category_sitemap_map = {
+            'country': 'https://www.pierreetvacances.com/sitemap.country.xml.gz',
+            'region': 'https://www.pierreetvacances.com/sitemap.region.xml.gz',
+            'destination': 'https://www.pierreetvacances.com/sitemap.destination.xml.gz',
+            'zone-touristique': 'https://www.pierreetvacances.com/sitemap.zone-touristique.xml.gz',
+            'fiche-produit': 'https://www.pierreetvacances.com/sitemap.fiche-produit.xml.gz',
+            'avis-fiche-produit': 'https://www.pierreetvacances.com/sitemap.avis-fiche-produit.xml.gz',
+            'blog': 'https://www.pierreetvacances.com/sitemap.blog.xml.gz',
+            'autre-page': 'https://www.pierreetvacances.com/sitemap.autre-page.xml.gz'
+        }
+        
+        # Filtrer uniquement les catégories sélectionnées
+        selected_sitemaps = {cat: url for cat, url in category_sitemap_map.items() if cat in selected_categories}
+        
+        total_files = len(selected_sitemaps)
+        processed_files = 0
+        
+        for category, sitemap_url in selected_sitemaps.items():
+            try:
+                print(f"🗺️ Scraping {category}: {sitemap_url}")
+                
+                if self.progress_callback:
+                    progress = 10 + (processed_files / total_files) * 70  # 10% à 80%
+                    self.progress_callback(int(progress), f"Traitement {category}.xml.gz...")
+                
+                response = self.session.get(sitemap_url, timeout=15)
+                
+                if response.status_code == 200:
+                    # Décompresser le contenu GZ
+                    decompressed_content = gzip.decompress(response.content)
+                    
+                    # Parser le XML décompressé
+                    soup = BeautifulSoup(decompressed_content, 'xml')
+                    
+                    url_count = 0
+                    for loc in soup.find_all('loc'):
+                        url = loc.text.strip()
+                        # Créer une destination depuis chaque URL trouvée
+                        destination = self._create_destination_from_url_with_source(url, category)
+                        if destination:
+                            destinations.append(destination)
+                            url_count += 1
+                    
+                    print(f"✅ {category}: {url_count} URLs extraites")
+                else:
+                    print(f"❌ Erreur HTTP {response.status_code} pour {category}")
+                                
+            except Exception as e:
+                print(f"❌ Erreur scraping {category}: {e}")
+            
+            processed_files += 1
+        
+        print(f"📊 Total consolidé: {len(destinations)} destinations depuis {total_files} fichiers GZ")
+        return destinations
+    
+    def _create_destination_from_url_with_source(self, url, source_category):
+        """Crée une destination depuis une URL avec marquage de la source GZ"""
+        try:
+            name = self._extract_name_from_url(url)
+            country = self._determine_country(url)
+            destination_type = self._determine_type(url, name)
+            category = self._determine_category(url, name)
+            
+            return {
+                'name': name,
+                'url': url,
+                'country': country,
+                'region': None,
+                'city': None,
+                'type': destination_type,
+                'category': category,
+                'source_gz': source_category  # Marquer la source GZ
+            }
+        except Exception as e:
+            print(f"❌ Erreur création destination {url}: {e}")
+            return None
+    
+    def _save_destinations_with_source(self, destinations, source_categories):
+        """Sauvegarde les destinations en marquant leur source GZ"""
+        saved_count = 0
+        
+        for destination in destinations:
+            try:
+                # Ajouter les informations de source
+                if 'source_gz' not in destination:
+                    destination['source_gz'] = 'unknown'
+                
+                # Utiliser la méthode existante de sauvegarde
+                if self.db.add_destination(
+                    name=destination['name'],
+                    url=destination['url'],
+                    country=destination['country'],
+                    region=destination.get('region'),
+                    city=destination.get('city'),
+                    destination_type=destination.get('type'),
+                    category=destination.get('category'),
+                    notes=f"Source: {destination['source_gz']}.xml.gz"
+                ):
+                    saved_count += 1
+                    
+            except Exception as e:
+                print(f"❌ Erreur sauvegarde {destination.get('url', 'URL inconnue')}: {e}")
+        
+        print(f"💾 {saved_count} destinations sauvegardées depuis {len(source_categories)} fichiers GZ")
+        return saved_count
+    
     def _scrape_catalog_page(self, url):
         """Scrape une page de catalogue"""
         destinations = []
@@ -301,43 +456,174 @@ class PVCatalogScraper:
         
         return destinations
     
-    def _scrape_sitemaps(self):
-        """Scrape les sitemaps XML GZ pour plus de couverture"""
-        destinations = []
+    def _scrape_sitemaps(self, selected_categories=None):
+        """Scrape les sitemaps XML GZ - Version de compatibilité pour l'ancienne méthode"""
+        # Rediriger vers la nouvelle méthode
+        if selected_categories:
+            return self._scrape_selected_gz_files(selected_categories)
+        else:
+            # Par défaut, scraper seulement les destinations pour compatibilité
+            return self._scrape_selected_gz_files(['destination'])
+    
+    def get_sitemap_entry_counts(self):
+        """Compte le nombre d'entrées dans chaque fichier sitemap sans les télécharger entièrement"""
+        counts = {}
         
-        # URL du sitemap des destinations uniquement
-        sitemap_gz_urls = [
-            'https://www.pierreetvacances.com/sitemap.destination.xml.gz'
-        ]
+        category_sitemap_map = {
+            'country': 'https://www.pierreetvacances.com/sitemap.country.xml.gz',
+            'region': 'https://www.pierreetvacances.com/sitemap.region.xml.gz',
+            'destination': 'https://www.pierreetvacances.com/sitemap.destination.xml.gz',
+            'zone-touristique': 'https://www.pierreetvacances.com/sitemap.zone-touristique.xml.gz',
+            'fiche-produit': 'https://www.pierreetvacances.com/sitemap.fiche-produit.xml.gz',
+            'avis-fiche-produit': 'https://www.pierreetvacances.com/sitemap.avis-fiche-produit.xml.gz',
+            'blog': 'https://www.pierreetvacances.com/sitemap.blog.xml.gz',
+            'autre-page': 'https://www.pierreetvacances.com/sitemap.autre-page.xml.gz'
+        }
         
-        for sitemap_url in sitemap_gz_urls:
+        for category, sitemap_url in category_sitemap_map.items():
             try:
-                print(f"🗺️ Scraping sitemap GZ: {sitemap_url}")
+                response = self.session.get(sitemap_url, timeout=10)
+                if response.status_code == 200:
+                    # Décompresser le contenu GZ
+                    decompressed_content = gzip.decompress(response.content)
+                    # Parser le XML décompressé
+                    soup = BeautifulSoup(decompressed_content, 'xml')
+                    # Compter les éléments <loc>
+                    count = len(soup.find_all('loc'))
+                    counts[category] = count
+                else:
+                    counts[category] = 0
+            except Exception as e:
+                print(f"Erreur lors du comptage pour {category}: {e}")
+                counts[category] = 0
+        
+        return counts
+    
+    def analyze_all_sitemaps_content(self):
+        """Analyse le contenu détaillé de tous les sitemaps pour créer une hiérarchie de filtres"""
+        analysis = {}
+        
+        category_sitemap_map = {
+            'country': 'https://www.pierreetvacances.com/sitemap.country.xml.gz',
+            'region': 'https://www.pierreetvacances.com/sitemap.region.xml.gz',
+            'destination': 'https://www.pierreetvacances.com/sitemap.destination.xml.gz',
+            'zone-touristique': 'https://www.pierreetvacances.com/sitemap.zone-touristique.xml.gz',
+            'fiche-produit': 'https://www.pierreetvacances.com/sitemap.fiche-produit.xml.gz',
+            'avis-fiche-produit': 'https://www.pierreetvacances.com/sitemap.avis-fiche-produit.xml.gz',
+            'blog': 'https://www.pierreetvacances.com/sitemap.blog.xml.gz',
+            'autre-page': 'https://www.pierreetvacances.com/sitemap.autre-page.xml.gz'
+        }
+        
+        for category, sitemap_url in category_sitemap_map.items():
+            try:
+                print(f"📊 Analyse détaillée: {category}")
                 response = self.session.get(sitemap_url, timeout=15)
                 
                 if response.status_code == 200:
                     # Décompresser le contenu GZ
                     decompressed_content = gzip.decompress(response.content)
-                    
                     # Parser le XML décompressé
                     soup = BeautifulSoup(decompressed_content, 'xml')
                     
-                    url_count = 0
+                    urls = []
                     for loc in soup.find_all('loc'):
                         url = loc.text.strip()
-                        if self._is_destination_link(url):
-                            destination = self._create_destination_from_url(url)
-                            if destination:
-                                destinations.append(destination)
-                                url_count += 1
+                        urls.append(url)
                     
-                    print(f"✅ Sitemap {sitemap_url}: {url_count} destinations valides extraites")
-                                
+                    # Analyser les patterns d'URLs
+                    patterns = self._analyze_url_patterns(urls, category)
+                    analysis[category] = {
+                        'count': len(urls),
+                        'patterns': patterns,
+                        'sample_urls': urls[:10]  # Garder quelques exemples
+                    }
+                    
+                    print(f"✅ {category}: {len(urls)} URLs analysées")
+                    
             except Exception as e:
-                print(f"❌ Erreur sitemap {sitemap_url}: {e}")
+                print(f"❌ Erreur analyse {category}: {e}")
+                analysis[category] = {'count': 0, 'patterns': {}, 'sample_urls': []}
         
-        print(f"📊 Total sitemaps: {len(destinations)} destinations trouvées")
-        return destinations
+        return analysis
+    
+    def _analyze_url_patterns(self, urls, category):
+        """Analyse les patterns d'URLs pour identifier les filtres possibles"""
+        patterns = {
+            'languages': set(),
+            'url_types': set(),
+            'prefixes': set(),
+            'countries': set(),
+            'categories': set(),
+            'special_patterns': set()
+        }
+        
+        for url in urls:
+            # Extraire la langue
+            lang_match = re.search(r'/([a-z]{2}-[a-z]{2})/', url)
+            if lang_match:
+                patterns['languages'].add(lang_match.group(1))
+            
+            # Analyser les préfixes d'URL
+            path_parts = url.split('/')
+            if len(path_parts) > 4:
+                path_segment = path_parts[4]  # Après le domaine et la langue
+                
+                # Préfixes spéciaux
+                if path_segment.startswith('fp_'):
+                    patterns['prefixes'].add('fiche-produit')
+                    patterns['url_types'].add('residence')
+                elif path_segment.startswith('de_'):
+                    patterns['prefixes'].add('destination')
+                    patterns['url_types'].add('ville')
+                elif path_segment.startswith('co_'):
+                    patterns['prefixes'].add('pays')
+                    patterns['url_types'].add('country')
+                elif path_segment.startswith('ge_'):
+                    patterns['prefixes'].add('geographique')
+                    patterns['url_types'].add('region')
+                elif path_segment.startswith('zt_'):
+                    patterns['prefixes'].add('zone-touristique')
+                    patterns['url_types'].add('zone-tourist')
+                
+                # Mots-clés dans les URLs
+                if 'location' in path_segment:
+                    patterns['categories'].add('location')
+                if 'sejour' in path_segment:
+                    patterns['categories'].add('sejour')
+                if 'residence' in path_segment:
+                    patterns['categories'].add('residence')
+                if 'hotel' in path_segment:
+                    patterns['categories'].add('hotel')
+                if 'appartement' in path_segment:
+                    patterns['categories'].add('appartement')
+                if 'villa' in path_segment:
+                    patterns['categories'].add('villa')
+                if 'camping' in path_segment:
+                    patterns['categories'].add('camping')
+                if 'offre' in path_segment or 'promo' in path_segment:
+                    patterns['categories'].add('offre')
+                if 'avis' in path_segment or 'review' in path_segment:
+                    patterns['categories'].add('avis')
+                if 'guide' in path_segment or 'activite' in path_segment:
+                    patterns['categories'].add('guide')
+                if 'blog' in path_segment or 'article' in path_segment:
+                    patterns['categories'].add('blog')
+                
+                # Détecter les pays dans les URLs
+                country_keywords = [
+                    'france', 'espagne', 'italie', 'grece', 'portugal', 'malte',
+                    'maurice', 'reunion', 'andorre', 'guadeloupe', 'martinique',
+                    'allemagne', 'autriche', 'suisse', 'belgique', 'pays-bas'
+                ]
+                
+                for keyword in country_keywords:
+                    if keyword in url.lower():
+                        patterns['countries'].add(keyword)
+        
+        # Convertir les sets en listes pour la sérialisation JSON
+        return {k: list(v) for k, v in patterns.items()}
+        
+        return patterns
     
     def _is_destination_link(self, url):
         """Vérifie si l'URL est une destination valide P&V"""

@@ -1,0 +1,3452 @@
+{
+  "timestamp": "2025-07-30T23:16:10.113208",
+  "date": "2025-07-30",
+  "time": "23:16:10",
+  "total_destinations": 157,
+  "results": [
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location vacances en Andorre, séjour en Andorre, Pierre & Vacances",
+      "name": "Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_last-minute-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramische Sicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last Minute Urlaub in Antillen - Last Minute Angebote in Antillen  | Pierre & Vacances",
+      "name": "Last Minute Antillen",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Andorre - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Andorre - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location vacances en Andorre, séjour en Andorre, Pierre & Vacances",
+      "name": "Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_last-minute-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramische Sicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last Minute Urlaub in Andorra - Last Minute Angebote in Andorra  | Pierre & Vacances",
+      "name": "Last Minute Andorra",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Andorre et courts séjours | Pierre & Vacances",
+      "name": "Week End Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-andorre",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": " Andorre",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Andorre et courts séjours | Pierre & Vacances",
+      "name": "Week End Andorre",
+      "country": "AD"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_last-minute-spanien",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramische Sicht Spanien",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last Minute Urlaub in Spanien - Last Minute Angebote in Spanien  | Pierre & Vacances",
+      "name": "Last Minute Spanien",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_last-minute-frankreich",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramische Sicht Frankreich",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last Minute Urlaub in Frankreich - Last Minute Angebote in Frankreich  | Pierre & Vacances",
+      "name": "Last Minute Frankreich",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_urlaub-ferienwohnungen-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramische Sicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Urlaub in Antillen - Unsere Angebote nach Antillen  | Pierre & Vacances",
+      "name": "Urlaub Ferienwohnungen Antillen",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_urlaub-ferienwohnungen-frankreich",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramische Sicht Frankreich",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Urlaub in Frankreich - Unsere Angebote nach Frankreich  | Pierre & Vacances",
+      "name": "Urlaub Ferienwohnungen Frankreich",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_urlaub-ferienwohnungen-spanien",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramische Sicht Spanien",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Urlaub in Spanien - Unsere Angebote nach Spanien  | Pierre & Vacances",
+      "name": "Urlaub Ferienwohnungen Spanien",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panorámica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Alquiler vacacional en Francia - Viajes en Francia | Pierre & Vacances",
+      "name": "Alquiler Vacaciones Francia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Espagne - Séjour Espagne | Pierre & Vacances",
+      "name": "Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panorámica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacaciones Andorra, Alquiler de apartamentos Andorra, Pierre & Vacances",
+      "name": "Alquiler Vacaciones Andorra",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-espana",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panorámica España",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Alquiler apartamentos en España · Pierre & Vacances",
+      "name": "Alquiler Vacaciones Espana",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panorámica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas de fin de semana a Andorra · Pierre & Vacances",
+      "name": "Fin De Semana Andorra",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Espagne - Séjour Espagne | Pierre & Vacances",
+      "name": "Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panorámica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Alquiler vacacional en Italia - Viajes en Italia | Pierre & Vacances",
+      "name": "Alquiler Vacaciones Italia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panorámica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacaciones última hora Andorra · Pierre & Vacances",
+      "name": "Vacaciones Ultima Hora Andorra",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panorámica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas de fin de semana Francia - Finde en Francia | Pierre & Vacances",
+      "name": "Fin De Semana Francia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-espana",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panorámica España",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Ultima hora en España - Ofertas de ultima hora | Pierre & Vacances",
+      "name": "Vacaciones Ultima Hora Espana",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-espana",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panorámica España",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas Fin de semana en España · Pierre et Vacances",
+      "name": "Fin De Semana Espana",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panorámica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas de fin de semana Italia - Finde en Italia | Pierre & Vacances",
+      "name": "Fin De Semana Italia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panorámica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Ultima hora en Francia - Ofertas de ultima hora | Pierre & Vacances",
+      "name": "Vacaciones Ultima Hora Francia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panorámica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Ultima hora en Italia - Ofertas de ultima hora | Pierre & Vacances",
+      "name": "Vacaciones Ultima Hora Italia",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Espagne - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Espagne - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_urlaub-ferienwohnungen-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramische Sicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Ferien Andorra, Ferienwohnungen Andorra, Pierre & Vacances",
+      "name": "Urlaub Ferienwohnungen Andorra",
+      "country": "DE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-croatie",
+      "status": "error",
+      "images_found": 0,
+      "images": [],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": "Erreur inattendue: HTTP Error 404: ",
+      "title": "",
+      "name": "Croatie",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramic visual France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday rentals in France - Holiday apartments France | Pierre & Vacances",
+      "name": "Holidays France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-italy",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramic visual Italy",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday rentals in Italy - Holiday apartments Italy | Pierre & Vacances",
+      "name": "Holidays Italy",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances France - Séjour France | Pierre & Vacances",
+      "name": "France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Espagne et courts séjours | Pierre & Vacances",
+      "name": "Week End Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-espagne",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": " Espagne",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Espagne et courts séjours | Pierre & Vacances",
+      "name": "Week End Espagne",
+      "country": "ES"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-andora",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramic visual Andora",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday Andora, Self catering accommodation with Andora, Pierre & Vacances",
+      "name": "Holidays Andora",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances France - Séjour France | Pierre & Vacances",
+      "name": "France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-spain",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramic visual Spain",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday rentals in Spain - Holiday apartments Spain | Pierre & Vacances",
+      "name": "Holidays Spain",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-andora",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramic visual Andora",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in Andora - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays Andora",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-italy",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramic visual Italy",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in Italy - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays Italy",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-west-indies",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramic visual West Indies",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in West Indies - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays West Indies",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-spain",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramic visual Spain",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in Spain - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays Spain",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-west-indies",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramic visual West Indies",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday rentals in West Indies - Holiday apartments West Indies | Pierre & Vacances",
+      "name": "Holidays West Indies",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute France - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramisch uitzicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Antillen - Vakantie in Antillen  | Pierre & Vacances",
+      "name": "Vakantie Antillen",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-frankrijk",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramisch uitzicht Frankrijk",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Frankrijk - Vakantie in Frankrijk  | Pierre & Vacances",
+      "name": "Vakantie Frankrijk",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramisch uitzicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie Andorra, Vakantieverblijven met Andorra, Pierre & Vacances",
+      "name": "Vakantie Andorra",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramisch uitzicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Andorra - Last minute in Andorra | Pierre & Vacances",
+      "name": "Vakantie Last Minute Andorra",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramic visual France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in France - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute France - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramisch uitzicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Antillen - Last minute in Antillen | Pierre & Vacances",
+      "name": "Vakantie Last Minute Antillen",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-spanje",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramisch uitzicht Spanje",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Spanje - Last minute in Spanje | Pierre & Vacances",
+      "name": "Vakantie Last Minute Spanje",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-griekenland",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": "Panoramisch uitzicht Griekenland",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Griekenland - Last minute in Griekenland | Pierre & Vacances",
+      "name": "Vakantie Last Minute Griekenland",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-malta",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": "Panoramisch uitzicht Malta",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Malta - Last minute in Malta | Pierre & Vacances",
+      "name": "Vakantie Last Minute Malta",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-mauritius",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": "Panoramisch uitzicht Mauritius",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Mauritius - Last minute in Mauritius | Pierre & Vacances",
+      "name": "Vakantie Last Minute Mauritius",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-malta",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": "Panoramisch uitzicht Malta",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Malta - Vakantie in Malta | Pierre & Vacances",
+      "name": "Vakantie Malta",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-frankrijk",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramisch uitzicht Frankrijk",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Frankrijk - Last minute in Frankrijk | Pierre & Vacances",
+      "name": "Vakantie Last Minute Frankrijk",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-griekenland",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": "Panoramisch uitzicht Griekenland",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Griekenland - Vakantie in Griekenland  | Pierre & Vacances",
+      "name": "Vakantie Griekenland",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-mauritius",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": "Panoramisch uitzicht Mauritius",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Mauritius - Vakantie in Mauritius | Pierre & Vacances",
+      "name": "Vakantie Mauritius",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-spain",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramic visual Spain",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in Spain - Short breaks Spain | Pierre & Vacances",
+      "name": "Weekend Spain",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramic visual France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in France - Short breaks France | Pierre & Vacances",
+      "name": "Weekend France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end France et courts séjours | Pierre & Vacances",
+      "name": "Week End France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-andora",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramic visual Andora",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in Andora - Short breaks Andora | Pierre & Vacances",
+      "name": "Weekend Andora",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-spanje",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramisch uitzicht Spanje",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Spanje - Vakantie in Spanje | Pierre & Vacances",
+      "name": "Vakantie Spanje",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-west-indies",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramic visual West Indies",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in West Indies - Short breaks West Indies | Pierre & Vacances",
+      "name": "Weekend West Indies",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-italy",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramic visual Italy",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in Italy - Short breaks Italy | Pierre & Vacances",
+      "name": "Weekend Italy",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Antilles - Séjour Antilles | Pierre & Vacances",
+      "name": "Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Antilles - Séjour Antilles | Pierre & Vacances",
+      "name": "Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panorámica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Apartamentos de última hora en Antillas",
+      "name": "Vacaciones Ultima Hora Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-france",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": " France",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end France et courts séjours | Pierre & Vacances",
+      "name": "Week End France",
+      "country": "FR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panorámica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Apartamentos vacacionales en Antillas · Pierre & Vacances",
+      "name": "Alquiler Vacaciones Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panorámica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas de fin de semana Antilles - Finde en Antilles | Pierre & Vacances",
+      "name": "Fin De Semana Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Antilles - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Antilles - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panoramica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Affitti vacanze Antille - Viaggio in Antille | Pierre & Vacances",
+      "name": "Vacanze Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Antilles et courts séjours | Pierre & Vacances",
+      "name": "Week End Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panoramica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Antilles - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Grèce - Séjour Grèce | Pierre & Vacances",
+      "name": "Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Vista panoramica Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Antilles - Fine settimana Antilles | Pierre & Vacances",
+      "name": "Week End Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-antilles",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": " Antilles",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Antilles et courts séjours | Pierre & Vacances",
+      "name": "Week End Antilles",
+      "country": "GP"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Grèce - Séjour Grèce | Pierre & Vacances",
+      "name": "Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Grèce et courts séjours | Pierre & Vacances",
+      "name": "Week End Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Grèce - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Grèce - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-grece",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_92753_pano.jpg",
+          "alt": " Grèce",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Grèce et courts séjours | Pierre & Vacances",
+      "name": "Week End Grece",
+      "country": "GR"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Italie - Séjour Italie | Pierre & Vacances",
+      "name": "Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_urlaub-ferienwohnungen-italien",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramische Sicht Italien",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Urlaub in Italien - Unsere Angebote nach Italien  | Pierre & Vacances",
+      "name": "Urlaub Ferienwohnungen Italien",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/de-de/co_last-minute-italien",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramische Sicht Italien",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last Minute Urlaub in Italien - Last Minute Angebote in Italien  | Pierre & Vacances",
+      "name": "Last Minute Italien",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Italie - Séjour Italie | Pierre & Vacances",
+      "name": "Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Italie - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panoramica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Andorra - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Andorra",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-spagna",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panoramica Spagna",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Affitti vacanze Spagna - Viaggio in Spagna | Pierre & Vacances",
+      "name": "Vacanze Spagna",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Italie - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panoramica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze Andorra, Affitto appartamenti Andorra, Pierre & Vacances",
+      "name": "Vacanze Andorra",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panoramica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Affitti vacanze Italia - Viaggio in Italia | Pierre & Vacances",
+      "name": "Vacanze Italia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panoramica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Francia - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Francia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-portogallo",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panoramica Portogallo",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Affitti vacanze Portogallo - Viaggio in Portogallo | Pierre & Vacances",
+      "name": "Vacanze Portogallo",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panoramica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Italia - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Italia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-portogallo",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panoramica Portogallo",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Portogallo - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Portogallo",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-ultimo-minuto-spagna",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panoramica Spagna",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacanze last minute Spagna - Offerte last minute | Pierre & Vacances",
+      "name": "Vacanze Ultimo Minuto Spagna",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramisch uitzicht Italië",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Italië - Vakantie in Italië | Pierre & Vacances",
+      "name": "Vakantie Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Vista panoramica Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Andorra - Fine settimana Andorra | Pierre & Vacances",
+      "name": "Week End Andorra",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramisch uitzicht Italië",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Italië - Last minute in Italië | Pierre & Vacances",
+      "name": "Vakantie Last Minute Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramisch uitzicht Italië",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Italië - Vakantie in Italië | Pierre & Vacances",
+      "name": "Vakantie Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Panoramisch uitzicht Italië",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Italië - Last minute in Italië | Pierre & Vacances",
+      "name": "Vakantie Last Minute Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panoramica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Francia - Fine settimana Francia | Pierre & Vacances",
+      "name": "Week End Francia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_vacanze-francia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Vista panoramica Francia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Affitti vacanze Francia - Viaggio in Francia | Pierre & Vacances",
+      "name": "Vacanze Francia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-italia",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": "Vista panoramica Italia",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Italia - Fine settimana Italia | Pierre & Vacances",
+      "name": "Week End Italia",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Malte - Séjour Malte | Pierre & Vacances",
+      "name": "Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Italie et courts séjours | Pierre & Vacances",
+      "name": "Week End Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-portogallo",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panoramica Portogallo",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Portogallo - Fine settimana Portogallo | Pierre & Vacances",
+      "name": "Week End Portogallo",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Malte et courts séjours | Pierre & Vacances",
+      "name": "Week End Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/it-it/co_week-end-spagna",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Vista panoramica Spagna",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend Spagna - Fine settimana Spagna | Pierre & Vacances",
+      "name": "Week End Spagna",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-italie",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_162581_pano.jpg",
+          "alt": " Italie",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Italie et courts séjours | Pierre & Vacances",
+      "name": "Week End Italie",
+      "country": "IT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Malte - Séjour Malte | Pierre & Vacances",
+      "name": "Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Malte - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Malte - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Maurice - Séjour Maurice | Pierre & Vacances",
+      "name": "Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-malte",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_96846_pano.jpg",
+          "alt": " Malte",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Malte et courts séjours | Pierre & Vacances",
+      "name": "Week End Malte",
+      "country": "MT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Maurice - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-frankrijk",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramisch uitzicht Frankrijk",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Frankrijk - Vakantie in Frankrijk  | Pierre & Vacances",
+      "name": "Vakantie Frankrijk",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Maurice - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramisch uitzicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie Andorra, Vakantieverblijven met Andorra, Pierre & Vacances",
+      "name": "Vakantie Andorra",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramisch uitzicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Antillen - Vakantie in Antillen  | Pierre & Vacances",
+      "name": "Vakantie Antillen",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Maurice - Séjour Maurice | Pierre & Vacances",
+      "name": "Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Maurice et courts séjours | Pierre & Vacances",
+      "name": "Week End Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-maurice",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_104677_pano.jpg",
+          "alt": " Maurice",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Maurice et courts séjours | Pierre & Vacances",
+      "name": "Week End Maurice",
+      "country": "MU"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-andorra",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_68577_pano.jpg",
+          "alt": "Panoramisch uitzicht Andorra",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Andorra - Last minute in Andorra | Pierre & Vacances",
+      "name": "Vakantie Last Minute Andorra",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-spanje",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramisch uitzicht Spanje",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Spanje - Vakantie in Spanje | Pierre & Vacances",
+      "name": "Vakantie Spanje",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-antillen",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_152826_pano.jpg",
+          "alt": "Panoramisch uitzicht Antillen",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Antillen - Last minute in Antillen | Pierre & Vacances",
+      "name": "Vakantie Last Minute Antillen",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-spanje",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_149206_pano.jpg",
+          "alt": "Panoramisch uitzicht Spanje",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Spanje - Last minute in Spanje | Pierre & Vacances",
+      "name": "Vakantie Last Minute Spanje",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-frankrijk",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_87805_pano.jpg",
+          "alt": "Panoramisch uitzicht Frankrijk",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Frankrijk - Last minute in Frankrijk | Pierre & Vacances",
+      "name": "Vakantie Last Minute Frankrijk",
+      "country": "NL"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_alquiler-vacaciones-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panorámica Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Alquiler vacacional en Portugal - Viajes en Portugal | Pierre & Vacances",
+      "name": "Alquiler Vacaciones Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_holidays-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramic visual Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Holiday rentals in Portugal - Holiday apartments Portugal | Pierre & Vacances",
+      "name": "Holidays Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_last-minute-holidays-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramic visual Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Last minute holidays in Portugal - Holiday deals | Pierre & Vacances",
+      "name": "Last Minute Holidays Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Portugal - Séjour Portugal | Pierre & Vacances",
+      "name": "Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_fin-de-semana-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panorámica Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Escapadas de fin de semana Portugal - Finde en Portugal | Pierre & Vacances",
+      "name": "Fin De Semana Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/es-es/co_vacaciones-ultima-hora-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Vista panorámica Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Ultima hora en Portugal - Ofertas de ultima hora | Pierre & Vacances",
+      "name": "Vacaciones Ultima Hora Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Portugal - Séjour Portugal | Pierre & Vacances",
+      "name": "Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Portugal - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Portugal - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramisch uitzicht Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Portugal - Last minute in Portugal | Pierre & Vacances",
+      "name": "Vakantie Last Minute Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-last-minute-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramisch uitzicht Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Portugal - Last minute in Portugal | Pierre & Vacances",
+      "name": "Vakantie Last Minute Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Portugal et courts séjours | Pierre & Vacances",
+      "name": "Week End Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/nl-nl/co_vakantie-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramisch uitzicht Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Portugal - Vakantie in Portugal | Pierre & Vacances",
+      "name": "Vakantie Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/gb-en/co_weekend-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramic visual Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Weekend breaks in Portugal - Short breaks Portugal | Pierre & Vacances",
+      "name": "Weekend Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": " Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Portugal et courts séjours | Pierre & Vacances",
+      "name": "Week End Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-portugal",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_66342_pano.jpg",
+          "alt": "Panoramisch uitzicht Portugal",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Portugal - Vakantie in Portugal | Pierre & Vacances",
+      "name": "Vakantie Portugal",
+      "country": "PT"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_location-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Réunion - Séjour Réunion | Pierre & Vacances",
+      "name": "Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_vacances-derniere-minute-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Réunion - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_vacances-derniere-minute-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vacances dernière minute Réunion - Bon plans | Pierre & Vacances",
+      "name": "Vacances Derniere Minute Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_location-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location Vacances Réunion - Séjour Réunion | Pierre & Vacances",
+      "name": "Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-wl/co_week-end-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Réunion et courts séjours | Pierre & Vacances",
+      "name": "Week End Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-last-minute-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": "Panoramisch uitzicht Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Vakantie last minute naar Réunion - Last minute in Réunion | Pierre & Vacances",
+      "name": "Vakantie Last Minute Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/fr-fr/co_week-end-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": " Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Location week end Réunion et courts séjours | Pierre & Vacances",
+      "name": "Week End Reunion",
+      "country": "RE"
+    },
+    {
+      "url": "https://www.pierreetvacances.com/be-vl/co_vakantie-reunion",
+      "status": "success",
+      "images_found": 1,
+      "images": [
+        {
+          "src": "https://photos.pierreetvacances.com/admin/fp2/photos/pano/1368x456/AAA_115347_pano.jpg",
+          "alt": "Panoramisch uitzicht Réunion",
+          "is_valid": true,
+          "is_placeholder": false,
+          "class": [
+            "headband-img"
+          ]
+        }
+      ],
+      "has_placeholder": false,
+      "placeholder_count": 0,
+      "error": null,
+      "title": "Reizen naar Réunion - Vakantie in Réunion | Pierre & Vacances",
+      "name": "Vakantie Reunion",
+      "country": "RE"
+    }
+  ]
+}
